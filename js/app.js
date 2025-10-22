@@ -709,6 +709,39 @@ window.saveAsImage = async function() {
   }
   
   try {
+    // 저장 전에 말씀 길이에 따른 클래스가 제대로 적용되어 있는지 확인
+    const cardFlipContainer = resultCard.querySelector('.card-flip-container');
+    const lineCard = cardFlipContainer ? cardFlipContainer.querySelector('.line-card') : null;
+    const verseElement = lineCard ? lineCard.querySelector('.line-bible-verse') : null;
+    
+    // 말씀 길이에 따른 클래스가 없으면 추가
+    if (lineCard && verseElement) {
+      // 기존 클래스 제거
+      lineCard.classList.remove('verse-short', 'verse-medium', 'verse-long', 'verse-extra-long');
+      
+      // 실제 렌더링된 높이로 줄 수 계산
+      const lineHeight = parseFloat(window.getComputedStyle(verseElement).lineHeight);
+      const verseHeight = verseElement.scrollHeight;
+      const lineCount = Math.round(verseHeight / lineHeight);
+      
+      console.log('이미지 저장 시 말씀 줄 수:', lineCount);
+      
+      // 말씀 길이에 따라 클래스 추가
+      if (lineCount <= 4) {
+        lineCard.classList.add('verse-short');
+        console.log('적용된 클래스: verse-short');
+      } else if (lineCount <= 6) {
+        lineCard.classList.add('verse-medium');
+        console.log('적용된 클래스: verse-medium');
+      } else if (lineCount <= 8) {
+        lineCard.classList.add('verse-long');
+        console.log('적용된 클래스: verse-long');
+      } else {
+        lineCard.classList.add('verse-extra-long');
+        console.log('적용된 클래스: verse-extra-long');
+      }
+    }
+    
     // 저장 모드 활성화 (배경 + 로고 포함)
     resultContainer.classList.add('saving-mode');
     
