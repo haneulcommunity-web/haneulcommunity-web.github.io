@@ -2676,30 +2676,38 @@ input[type="file"] {
     background-attachment: scroll;
     padding: 15px;
     gap: 15px;
+    /* 스크롤 컨텍스트 제공 */
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100vh;
   }
   
   .avatar-header-bar {
     padding: 15px 20px;
     flex-wrap: wrap;
     gap: 12px;
+    flex-shrink: 0;
   }
   
   .avatar-save-section {
     padding: 15px 20px;
+    flex-shrink: 0;
   }
   
   /* 그리드를 1열로 변경 */
   .avatar-main-grid {
     grid-template-columns: 1fr;
     gap: 15px;
+    display: block; /* grid를 block으로 변경해서 sticky가 작동하도록 */
   }
   
   /* 미리보기를 상단에 고정 */
   .avatar-preview-section {
+    position: -webkit-sticky; /* Safari 지원 */
     position: sticky;
     top: 15px;
     z-index: 10;
-    order: 1;
+    margin-bottom: 15px;
   }
   
   .preview-card {
@@ -2712,9 +2720,10 @@ input[type="file"] {
   
   /* 옵션 섹션 */
   .avatar-options-section {
-    order: 2;
     max-height: none;
     padding: 20px;
+    /* 내부 스크롤 제거 */
+    overflow: visible;
   }
   
   /* 모바일 저장 버튼 표시 */
