@@ -2477,12 +2477,35 @@ input[type="file"] {
 
 /* 아바타 빌더 반응형 */
 @media (max-width: 1024px) {
-  /* 아바타 페이지의 search-container를 스크롤 가능하게 */
+  /* 아바타 페이지의 search-container를 단일 스크롤 컨테이너로 */
   #avatarPage .search-container {
     min-height: 100vh;
     height: 100vh;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 20px;
+    /* 부드러운 스크롤 */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+  
+  /* 스크롤바 스타일링 (모바일에서는 얇고 반투명) */
+  #avatarPage .search-container::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  #avatarPage .search-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  #avatarPage .search-container::-webkit-scrollbar-thumb {
+    background: rgba(12, 68, 59, 0.2);
+    border-radius: 4px;
+  }
+  
+  #avatarPage .search-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(12, 68, 59, 0.3);
   }
   
   #avatarPage .search-card {
@@ -2490,6 +2513,7 @@ input[type="file"] {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: visible;
   }
   
   .main-grid {
@@ -2502,16 +2526,27 @@ input[type="file"] {
   /* 미리보기를 스크롤 시 상단에 고정 */
   .preview-panel {
     position: sticky;
-    top: 20px;
+    top: 10px;
     z-index: 10;
     order: 1;
     padding: clamp(15px, 3vw, 25px);
     flex-shrink: 0;
+    transition: box-shadow 0.3s ease;
   }
   
+  /* 에디터 패널 - 내부 스크롤 제거하고 자연스럽게 확장 */
   .editor-panel {
     order: 2;
     flex: 1;
+    max-height: none !important;
+    overflow: visible !important;
+    transition: all 0.3s ease;
+  }
+  
+  /* 에디터 스크롤 클래스 비활성화 */
+  .editor-scroll {
+    max-height: none !important;
+    overflow-y: visible !important;
   }
 
   #avatarPreview {
