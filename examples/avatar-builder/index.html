@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아바타 빌더 - 메모지 스타일</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎨 아바타 빌더</h1>
+      <div class="header-actions">
+        <button class="btn" onclick="randomizeAll()" aria-label="전체 무작위 생성">🎲 전체 무작위</button>
+        <button class="btn btn-secondary" onclick="undo()" aria-label="실행 취소">↶ 실행취소</button>
+        <button class="btn btn-secondary" onclick="redo()" aria-label="다시 실행">↷ 다시실행</button>
+        <button class="btn btn-secondary" onclick="resetAvatar()" aria-label="초기화">🔄 초기화</button>
+        <button class="btn" onclick="exportPNG()" aria-label="PNG로 내보내기">💾 PNG</button>
+        <button class="btn" onclick="exportSVG()" aria-label="SVG로 내보내기">📄 SVG</button>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <!-- 미리보기 패널 -->
+      <div class="preview-panel">
+        <h2>미리보기</h2>
+        <svg id="avatarPreview" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+          <!-- SVG 정의부 -->
+          <defs id="assetDefs"></defs>
+          
+          <!-- 레이어 순서대로 렌더링 -->
+          <g data-part="faceShape"></g>
+          <g data-part="ears"></g>
+          <g data-part="skinTone"></g>
+          <g data-part="hairBack"></g>
+          <g data-part="eyebrows"></g>
+          <g data-part="eyes"></g>
+          <g data-part="nose"></g>
+          <g data-part="mouth"></g>
+          <g data-part="top"></g>
+          <g data-part="hair"></g>
+        </svg>
+        
+        <div class="export-options">
+          <label>
+            <input type="checkbox" id="transparentBg" checked>
+            투명 배경
+          </label>
+        </div>
+      </div>
+
+      <!-- 편집 패널 -->
+      <div class="editor-panel">
+        <!-- 얼굴형 -->
+        <div class="part-section">
+          <div class="part-title">👤 얼굴형</div>
+          <div class="options-grid" id="faceShapeOptions"></div>
+        </div>
+
+        <!-- 피부색 -->
+        <div class="part-section">
+          <div class="part-title">🎨 피부색</div>
+          <div class="color-palette" id="skinToneOptions"></div>
+        </div>
+
+        <!-- 머리스타일 -->
+        <div class="part-section">
+          <div class="part-title">💇 머리스타일</div>
+          <div class="options-grid" id="hairOptions"></div>
+          <div class="color-palette" id="hairColorOptions"></div>
+          <div class="control-group">
+            <button class="btn btn-secondary" onclick="randomizePart('hair')">🎲 무작위</button>
+          </div>
+        </div>
+
+        <!-- 눈 -->
+        <div class="part-section">
+          <div class="part-title">👁️ 눈</div>
+          <div class="options-grid" id="eyesOptions"></div>
+          <div class="color-palette" id="eyesColorOptions"></div>
+        </div>
+
+        <!-- 눈썹 -->
+        <div class="part-section">
+          <div class="part-title">✨ 눈썹</div>
+          <div class="options-grid" id="eyebrowsOptions"></div>
+          <div class="color-palette" id="eyebrowsColorOptions"></div>
+        </div>
+
+        <!-- 코 -->
+        <div class="part-section">
+          <div class="part-title">👃 코</div>
+          <div class="options-grid" id="noseOptions"></div>
+        </div>
+
+        <!-- 입 -->
+        <div class="part-section">
+          <div class="part-title">👄 입</div>
+          <div class="options-grid" id="mouthOptions"></div>
+          <div class="color-palette" id="mouthColorOptions"></div>
+        </div>
+
+        <!-- 귀 -->
+        <div class="part-section">
+          <div class="part-title">👂 귀</div>
+          <div class="options-grid" id="earsOptions"></div>
+        </div>
+
+        <!-- 상의 -->
+        <div class="part-section">
+          <div class="part-title">👕 상의</div>
+          <div class="options-grid" id="topOptions"></div>
+          <div class="color-palette" id="topColorOptions"></div>
+        </div>
+
+        <!-- 프리셋 관리 -->
+        <div class="part-section">
+          <div class="part-title">💾 프리셋</div>
+          <div class="preset-actions">
+            <button class="btn btn-secondary" onclick="savePreset()">저장</button>
+            <button class="btn btn-secondary" onclick="loadPreset()">불러오기</button>
+            <button class="btn btn-secondary" onclick="copyJSON()">JSON 복사</button>
+            <button class="btn btn-secondary" onclick="toggleJSONViewer()">JSON 보기</button>
+          </div>
+          <div id="jsonViewer" class="json-viewer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
+

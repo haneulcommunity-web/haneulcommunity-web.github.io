@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>The Steps of Haneul : 하늘의 걸음</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Adobe Fonts (optional) -->
+  <script>
+    (function(d) {
+      var config = { kitId: 'wcb3eag', scriptTimeout: 3000, async: true },
+      h=d.documentElement,t=setTimeout(function(){ h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive"; },config.scriptTimeout),
+      tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;
+      h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';
+      tk.async=true;tk.onload=tk.onreadystatechange=function(){ a=this.readyState; if(f||a&&a!="complete"&&a!="loaded")return; f=true;clearTimeout(t); try{Typekit.load(config)}catch(e){} };
+      s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- 메인 페이지 -->
+  <div id="mainPage" class="page active">
+        <div class="main-container">
+            <div class="main-content">
+                <h1 class="main-title">The Steps of Haneul</h1>
+                <p class="main-subtitle">하늘의 걸음과 섬김</p>
+                <p class="bible-verse">
+                  선한 사람의 걸음을 여호와께서 정하시니<br>그분은 그 길을 기뻐하십니다.<br>
+                  <span class="bible-reference">시편 37편 23절</span>
+              </p>
+                <div class="menu-buttons">
+                    <button class="menu-button" onclick="showPage('avatarPage')">아바타 생성</button>
+                    <button class="menu-button" onclick="showPage('searchPage')">조회</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  <!-- 아바타 생성 페이지 -->
+  <div id="avatarPage" class="page">
+    <div class="search-container">
+      <div class="search-card">
+      <div class="avatar-builder-header">
+        <h2>아바타 생성</h2>
+        <!-- 헤더 액션 제거: 저장/뒤로는 아래 폼에 배치 -->
+      </div>
+      
+      <!-- 아바타 저장 폼 -->
+      <div class="avatar-save-form">
+        <h3>아바타 저장</h3>
+        <div class="form-group">
+          <input type="text" id="avatarName" placeholder="이름을 입력하세요" class="form-input">
+          <input type="text" id="avatarTeam" placeholder="팀명을 입력하세요" class="form-input">
+        </div>
+        <div class="form-actions">
+          <button onclick="saveAvatar()" class="btn btn-primary">저장</button>
+          <button onclick="showPage('mainPage')" class="btn btn-secondary">뒤로가기</button>
+        </div>
+        <div id="avatarStatus" class="status-message"></div>
+      </div>
+
+      <div class="main-grid">
+        <!-- 미리보기 패널 -->
+        <div class="preview-panel preview-sticky">
+          <h3>미리보기</h3>
+          <div id="avatarPreview" style="width: 100%; max-width: 400px; margin: 0 auto;">
+            <!-- Dicebear SVG가 여기에 렌더링됩니다 -->
+          </div>
+          
+        </div>
+
+        <!-- 편집 패널 -->
+        <div class="editor-panel editor-scroll">
+          <!-- 머리 -->
+          <div class="part-section">
+            <div class="part-title">💇‍♀️ 머리 (48가지)</div>
+            <div class="options-grid" id="hairOptions"></div>
+          </div>
+
+          <!-- 눈 -->
+          <div class="part-section">
+            <div class="part-title">👁️ 눈 (24가지)</div>
+            <div class="options-grid" id="eyesOptions"></div>
+          </div>
+
+          <!-- 눈썹 -->
+          <div class="part-section">
+            <div class="part-title">✨ 눈썹 (13가지)</div>
+            <div class="options-grid" id="eyebrowsOptions"></div>
+          </div>
+
+          <!-- 코 -->
+          <div class="part-section">
+            <div class="part-title">👃 코 (6가지)</div>
+            <div class="options-grid" id="noseOptions"></div>
+          </div>
+
+          <!-- 입 -->
+          <div class="part-section">
+            <div class="part-title">👄 입 (27가지)</div>
+            <div class="options-grid" id="mouthOptions"></div>
+          </div>
+
+          <!-- 안경 -->
+          <div class="part-section">
+            <div class="part-title">👓 안경 (5가지)</div>
+            <div class="options-grid" id="glassesOptions"></div>
+          </div>
+
+          <!-- 하단 저장 버튼 -->
+          <div class="part-section" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+            <div class="part-title">저장하기</div>
+            <div class="control-group">
+              <button class="btn btn-primary" onclick="saveAvatar()" style="width: 100%; padding: 15px; font-size: 16px; font-weight: bold;">
+                아바타 저장
+              </button>
+              <p style="margin-top: 10px; font-size: 13px; color: #666; text-align: center;">
+                * 상단에 이름과 팀명을 입력한 후 저장해주세요
+              </p>
+            </div>
+          </div>
+
+          <!-- 내보내기 -->
+          <!-- <div class="part-section">
+            <div class="part-title">💾 내보내기</div>
+            <div class="control-group">
+              <button class="btn btn-secondary" onclick="exportAvatarAsSVG()" style="width: 100%; margin-bottom: 8px;">SVG 다운로드</button>
+              <button class="btn btn-secondary" onclick="exportAvatarAsPNG()" style="width: 100%;">PNG 다운로드</button>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 조회 페이지 -->
+  <div id="searchPage" class="page">
+    <div class="search-container">
+      <div class="search-card">
+        <h2>조회</h2>
+        <div class="search-form">
+          <div class="input-group">
+            <label for="searchName">이름</label>
+            <input type="text" id="searchName" placeholder="이름을 입력하세요">
+          </div>
+          <div class="input-group">
+            <label for="searchTeam">팀명</label>
+            <input type="text" id="searchTeam" placeholder="팀명을 입력하세요">
+          </div>
+          <button class="action-button" onclick="searchEmployee()">검색</button>
+        </div>
+        <div id="searchResults" class="search-results"></div>
+        <div id="searchStatus" class="status-message"></div>
+        <div class="back-button">
+          <button class="action-button secondary" onclick="showPage('mainPage')">← 메인으로</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 결과 페이지 -->
+  <div id="resultPage" class="page">
+    <div class="result-container">
+      <div id="resultCard">
+        <!-- LINE 카드가 여기에 동적으로 생성됩니다 -->
+      </div>
+      <div class="result-logo">
+        <img src="assets/images/HaneulLogo.png" alt="Haneul Logo" class="haneul-logo">
+      </div>
+      <div class="button-container">
+        <button class="result-button" onclick="saveAsImage()">이미지로 저장</button>
+        <button class="result-button" onclick="showPage('searchPage')">다시 검색</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/data.js"></script>
+  
+  <!-- Avatar System (Dicebear HTTP API 사용 - CDN 불필요) -->
+  <script src="js/assets.js"></script>
+  <script src="js/avatar-builder.js"></script>
+  
+  <!-- Firebase App (모듈로 로드) -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
