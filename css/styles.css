@@ -590,7 +590,8 @@ input[type="file"] {
 .line-character svg {
   width: 250px;
   max-width: none;
-  height: 100%;
+  height: auto;
+  max-height: 100%;
   object-fit: contain;
   object-position: bottom right;
   transition: width 0.3s ease;
@@ -802,7 +803,8 @@ input[type="file"] {
 .result-container.saving-mode .line-character svg {
   width: 250px;
   max-width: none;
-  height: 100%;
+  height: auto;
+  max-height: 100%;
   object-fit: contain;
   object-position: bottom right;
   transition: width 0.3s ease;
