@@ -41,39 +41,37 @@
 
   <!-- 아바타 생성 페이지 -->
   <div id="avatarPage" class="page">
-    <div class="search-container">
-      <div class="search-card">
-      <div class="avatar-builder-header">
-        <h2>아바타 생성</h2>
-        <!-- 헤더 액션 제거: 저장/뒤로는 아래 폼에 배치 -->
+    <div class="avatar-fullscreen-container">
+      <!-- 상단 헤더 -->
+      <div class="avatar-header-bar">
+        <h2 class="avatar-page-title">아바타 생성</h2>
+        <button onclick="showPage('mainPage')" class="btn-back">← 메인으로</button>
       </div>
-      
+
       <!-- 아바타 저장 폼 -->
-      <div class="avatar-save-form">
-        <h3>아바타 저장</h3>
-        <div class="form-group">
+      <div class="avatar-save-section">
+        <div class="form-group-inline">
           <input type="text" id="avatarName" placeholder="이름을 입력하세요" class="form-input">
           <input type="text" id="avatarTeam" placeholder="팀명을 입력하세요" class="form-input">
-        </div>
-        <div class="form-actions">
           <button onclick="saveAvatar()" class="btn btn-primary">저장</button>
-          <button onclick="showPage('mainPage')" class="btn btn-secondary">뒤로가기</button>
         </div>
         <div id="avatarStatus" class="status-message"></div>
       </div>
 
-      <div class="main-grid">
+      <!-- 메인 그리드 -->
+      <div class="avatar-main-grid">
         <!-- 미리보기 패널 -->
-        <div class="preview-panel preview-sticky">
-          <h3>미리보기</h3>
-          <div id="avatarPreview" style="width: 100%; max-width: 400px; margin: 0 auto;">
-            <!-- Dicebear SVG가 여기에 렌더링됩니다 -->
+        <div class="avatar-preview-section">
+          <div class="preview-card">
+            <h3>미리보기</h3>
+            <div id="avatarPreview" style="width: 100%; max-width: 350px; margin: 0 auto;">
+              <!-- Dicebear SVG가 여기에 렌더링됩니다 -->
+            </div>
           </div>
-          
         </div>
 
-        <!-- 편집 패널 -->
-        <div class="editor-panel editor-scroll">
+        <!-- 옵션 패널 -->
+        <div class="avatar-options-section">
           <!-- 머리 -->
           <div class="part-section">
             <div class="part-title">💇‍♀️ 머리 (48가지)</div>
@@ -110,29 +108,14 @@
             <div class="options-grid" id="glassesOptions"></div>
           </div>
 
-          <!-- 하단 저장 버튼 -->
-          <div class="part-section" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
-            <div class="part-title">저장하기</div>
-            <div class="control-group">
-              <button class="btn btn-primary" onclick="saveAvatar()" style="width: 100%; padding: 15px; font-size: 16px; font-weight: bold;">
-                아바타 저장
-              </button>
-              <p style="margin-top: 10px; font-size: 13px; color: #666; text-align: center;">
-                * 상단에 이름과 팀명을 입력한 후 저장해주세요
-              </p>
-            </div>
-          </div>
-
-          <!-- 내보내기 -->
-          <!-- <div class="part-section">
-            <div class="part-title">💾 내보내기</div>
-            <div class="control-group">
-              <button class="btn btn-secondary" onclick="exportAvatarAsSVG()" style="width: 100%; margin-bottom: 8px;">SVG 다운로드</button>
-              <button class="btn btn-secondary" onclick="exportAvatarAsPNG()" style="width: 100%;">PNG 다운로드</button>
-            </div> -->
+          <!-- 하단 저장 버튼 (모바일용) -->
+          <div class="part-section mobile-save-section">
+            <button class="btn btn-primary btn-large" onclick="saveAvatar()">
+              아바타 저장
+            </button>
+            <p class="save-hint">* 상단에 이름과 팀명을 입력한 후 저장해주세요</p>
           </div>
         </div>
-      </div>
       </div>
     </div>
   </div>

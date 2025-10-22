@@ -1871,7 +1871,201 @@ input[type="file"] {
   }
 }
 
-/* 아바타 빌더 헤더 */
+/* ===== 아바타 생성 페이지 - 전체 화면 레이아웃 ===== */
+.avatar-fullscreen-container {
+  min-height: 100vh;
+  background-image: url('../assets/images/back.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding: clamp(20px, 3vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(15px, 2vw, 20px);
+}
+
+/* 상단 헤더 바 */
+.avatar-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: clamp(15px, 3vw, 25px) clamp(20px, 4vw, 40px);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.avatar-page-title {
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: rgba(12, 68, 59, 1);
+  font-family: 'Noto Serif KR', serif;
+  margin: 0;
+}
+
+.btn-back {
+  background: rgba(12, 68, 59, 0.1);
+  color: rgba(12, 68, 59, 1);
+  border: 2px solid rgba(12, 68, 59, 0.3);
+  padding: clamp(10px, 2vw, 12px) clamp(20px, 3vw, 30px);
+  border-radius: 50px;
+  font-size: clamp(13px, 2vw, 15px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.btn-back:hover {
+  background: rgba(12, 68, 59, 0.15);
+  border-color: rgba(12, 68, 59, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(12, 68, 59, 0.2);
+}
+
+/* 아바타 저장 섹션 */
+.avatar-save-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: clamp(15px, 3vw, 25px) clamp(20px, 4vw, 30px);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.form-group-inline {
+  display: flex;
+  gap: clamp(10px, 2vw, 15px);
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.form-group-inline .form-input {
+  flex: 1;
+  min-width: 150px;
+  padding: clamp(12px, 2vw, 15px) clamp(15px, 3vw, 20px);
+  border: 2px solid rgba(12, 68, 59, 0.2);
+  border-radius: 15px;
+  font-size: clamp(14px, 2vw, 16px);
+  font-family: 'Noto Serif KR', serif;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.form-group-inline .form-input:focus {
+  outline: none;
+  border-color: rgba(12, 68, 59, 0.6);
+  box-shadow: 0 0 0 3px rgba(12, 68, 59, 0.1);
+  background: white;
+}
+
+.form-group-inline .form-input::placeholder {
+  color: rgba(12, 68, 59, 0.4);
+  font-weight: 300;
+}
+
+.form-group-inline .btn-primary {
+  flex-shrink: 0;
+  min-width: 100px;
+}
+
+/* 메인 그리드 */
+.avatar-main-grid {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: clamp(15px, 2vw, 20px);
+  flex: 1;
+  align-items: start;
+}
+
+/* 미리보기 섹션 */
+.avatar-preview-section {
+  position: sticky;
+  top: 20px;
+  align-self: flex-start;
+}
+
+.preview-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: clamp(20px, 3vw, 30px);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-align: center;
+}
+
+.preview-card h3 {
+  font-size: clamp(18px, 3vw, 22px);
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: rgba(12, 68, 59, 1);
+  font-family: 'Noto Serif KR', serif;
+  margin: 0 0 20px 0;
+}
+
+/* 옵션 섹션 */
+.avatar-options-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: clamp(20px, 3vw, 30px);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.avatar-options-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.avatar-options-section::-webkit-scrollbar-track {
+  background: rgba(12, 68, 59, 0.05);
+  border-radius: 3px;
+}
+
+.avatar-options-section::-webkit-scrollbar-thumb {
+  background: rgba(12, 68, 59, 0.2);
+  border-radius: 3px;
+}
+
+.avatar-options-section::-webkit-scrollbar-thumb:hover {
+  background: rgba(12, 68, 59, 0.4);
+}
+
+/* 모바일 저장 버튼 */
+.mobile-save-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(12, 68, 59, 0.1);
+  text-align: center;
+  display: none; /* 기본적으로 숨김, 모바일에서만 표시 */
+}
+
+.btn-large {
+  width: 100%;
+  padding: 15px 40px;
+  font-size: clamp(15px, 3vw, 17px);
+  font-weight: 500;
+  letter-spacing: 2px;
+}
+
+.save-hint {
+  margin-top: 12px;
+  font-size: clamp(12px, 2vw, 13px);
+  color: rgba(12, 68, 59, 0.6);
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 300;
+}
+
+/* 아바타 빌더 헤더 (기존 코드 유지) */
 .avatar-builder-header {
   background: rgba(255,255,255,0.95);
   backdrop-filter: blur(20px);
@@ -2477,136 +2671,126 @@ input[type="file"] {
 
 /* 아바타 빌더 반응형 */
 @media (max-width: 1024px) {
-  /* 아바타 페이지의 search-container를 단일 스크롤 컨테이너로 */
-  #avatarPage .search-container {
-    min-height: 100vh;
-    height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 20px;
-    /* 부드러운 스크롤 */
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
+  /* 아바타 전체 화면 레이아웃 - 태블릿/모바일 */
+  .avatar-fullscreen-container {
+    background-attachment: scroll;
+    padding: 15px;
+    gap: 15px;
   }
   
-  /* 스크롤바 스타일링 (모바일에서는 얇고 반투명) */
-  #avatarPage .search-container::-webkit-scrollbar {
-    width: 4px;
+  .avatar-header-bar {
+    padding: 15px 20px;
+    flex-wrap: wrap;
+    gap: 12px;
   }
   
-  #avatarPage .search-container::-webkit-scrollbar-track {
-    background: transparent;
+  .avatar-save-section {
+    padding: 15px 20px;
   }
   
-  #avatarPage .search-container::-webkit-scrollbar-thumb {
-    background: rgba(12, 68, 59, 0.2);
-    border-radius: 4px;
-  }
-  
-  #avatarPage .search-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(12, 68, 59, 0.3);
-  }
-  
-  #avatarPage .search-card {
-    max-width: none;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    overflow: visible;
-  }
-  
-  .main-grid {
+  /* 그리드를 1열로 변경 */
+  .avatar-main-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
-    display: flex;
-    flex-direction: column;
+    gap: 15px;
   }
-
-  /* 미리보기를 스크롤 시 상단에 고정 */
-  .preview-panel {
+  
+  /* 미리보기를 상단에 고정 */
+  .avatar-preview-section {
     position: sticky;
-    top: 10px;
+    top: 15px;
     z-index: 10;
     order: 1;
-    padding: clamp(15px, 3vw, 25px);
-    flex-shrink: 0;
-    transition: box-shadow 0.3s ease;
   }
   
-  /* 에디터 패널 - 내부 스크롤 제거하고 자연스럽게 확장 */
-  .editor-panel {
-    order: 2;
-    flex: 1;
-    max-height: none !important;
-    overflow: visible !important;
-    transition: all 0.3s ease;
+  .preview-card {
+    padding: 20px;
   }
   
-  /* 에디터 스크롤 클래스 비활성화 */
-  .editor-scroll {
-    max-height: none !important;
-    overflow-y: visible !important;
-  }
-
   #avatarPreview {
-    max-width: 350px;
+    max-width: 320px;
   }
   
-  .preview-panel h3 {
-    font-size: clamp(16px, 3vw, 20px);
-    margin-bottom: 15px;
+  /* 옵션 섹션 */
+  .avatar-options-section {
+    order: 2;
+    max-height: none;
+    padding: 20px;
+  }
+  
+  /* 모바일 저장 버튼 표시 */
+  .mobile-save-section {
+    display: block;
   }
 }
 
 @media (max-width: 768px) {
-  .search-card {
-    padding: 30px 20px;
+  /* 아바타 페이지 모바일 최적화 */
+  .avatar-fullscreen-container {
+    padding: 12px;
+    gap: 12px;
   }
   
-  .options-grid {
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 8px;
-  }
-
-  .header-actions {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .form-group {
+  .avatar-header-bar {
+    padding: 12px 15px;
     flex-direction: column;
-    gap: 10px;
+    align-items: stretch;
+    text-align: center;
   }
   
-  .form-input {
+  .avatar-page-title {
+    margin-bottom: 8px;
+  }
+  
+  .btn-back {
     width: 100%;
   }
   
-  .form-actions {
+  .avatar-save-section {
+    padding: 15px;
+  }
+  
+  .form-group-inline {
     flex-direction: column;
-    gap: 10px;
   }
   
-  .avatar-save-form .btn,
-  .form-actions .btn {
+  .form-group-inline .form-input {
+    min-width: 100%;
+  }
+  
+  .form-group-inline .btn-primary {
     width: 100%;
-    max-width: none;
+    min-width: 100%;
   }
   
-  /* 모바일에서 미리보기 크기 조정 */
-  .preview-panel {
-    top: 15px;
+  .avatar-preview-section {
+    top: 12px;
+  }
+  
+  .preview-card {
     padding: 15px;
   }
   
   #avatarPreview {
-    max-width: 300px;
+    max-width: 280px;
+  }
+  
+  .avatar-options-section {
+    padding: 15px;
+  }
+  
+  .options-grid {
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 8px;
   }
   
   .color-palette {
     grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
     gap: 8px;
+  }
+  
+  /* 기존 search-card 스타일 유지 (조회 페이지용) */
+  .search-card {
+    padding: 30px 20px;
   }
 }
 
@@ -2625,18 +2809,43 @@ input[type="file"] {
 }
 
 @media (max-width: 480px) {
-  /* 작은 모바일에서도 미리보기 고정 유지 */
-  .preview-panel {
-    top: 10px;
+  /* 작은 모바일 최적화 */
+  .avatar-fullscreen-container {
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .avatar-header-bar {
+    padding: 10px 12px;
+  }
+  
+  .avatar-save-section {
     padding: 12px;
   }
   
+  .avatar-preview-section {
+    top: 10px;
+  }
+  
+  .preview-card {
+    padding: 12px;
+  }
+  
+  .preview-card h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  
   #avatarPreview {
-    max-width: 280px;
+    max-width: 260px;
+  }
+  
+  .avatar-options-section {
+    padding: 12px;
   }
   
   .options-grid {
-    grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
     gap: 6px;
   }
   
@@ -2651,41 +2860,70 @@ input[type="file"] {
   }
   
   .part-section {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+    margin-bottom: 18px;
+    padding-bottom: 18px;
   }
   
-  .control-group {
-    flex-direction: column;
-  }
-  
-  .control-group .btn {
-    width: 100%;
+  .part-title {
+    font-size: 15px;
+    margin-bottom: 12px;
   }
 }
 
 @media (max-width: 360px) {
-  /* 초소형 모바일에서도 미리보기 상단 고정 */
-  .preview-panel {
-    top: 8px;
+  /* 초소형 모바일 최적화 */
+  .avatar-fullscreen-container {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .avatar-header-bar {
+    padding: 8px 10px;
+  }
+  
+  .avatar-save-section {
     padding: 10px;
   }
   
-  .preview-panel h3 {
+  .form-group-inline .form-input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .avatar-preview-section {
+    top: 8px;
+  }
+  
+  .preview-card {
+    padding: 10px;
+  }
+  
+  .preview-card h3 {
     font-size: 14px;
     margin-bottom: 10px;
   }
   
   #avatarPreview {
-    max-width: 240px;
+    max-width: 220px;
+  }
+  
+  .avatar-options-section {
+    padding: 10px;
   }
   
   .options-grid {
-    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+    gap: 5px;
   }
   
   .color-palette {
-    grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+    gap: 5px;
+  }
+  
+  .part-title {
+    font-size: 14px;
+    margin-bottom: 10px;
   }
 }
 
