@@ -156,7 +156,7 @@ window.saveAvatar = async function() {
   const status = document.getElementById('avatarStatus');
 
   if (!name || !team) {
-    status.textContent = "❌ 이름과 팀명을 입력해주세요!";
+    status.textContent = "이름과 팀명을 입력해주세요!";
     status.style.color = "#e74c3c";
     
     // 상단 입력 필드로 스크롤 이동
@@ -197,7 +197,7 @@ window.saveAvatar = async function() {
     }
   }
 
-  status.textContent = "💾 아바타 저장 중...";
+  status.textContent = "아바타 저장 중...";
   status.style.color = "#3498db";
 
   try {
@@ -232,7 +232,7 @@ window.saveAvatar = async function() {
       createdAt: new Date().toISOString()
     });
 
-    status.innerHTML = `✅ 아바타 저장 완료!`;
+    status.innerHTML = `아바타 저장 완료!`;
     status.style.color = "#27ae60";
     
     // 입력 필드 초기화
@@ -256,7 +256,7 @@ window.saveAvatar = async function() {
       }
     }, 1500);
   } catch (error) {
-    status.textContent = "❌ 저장 실패: " + error.message;
+    status.textContent = "저장 실패: " + error.message;
     status.style.color = "#e74c3c";
   }
 };
@@ -406,12 +406,12 @@ window.searchEmployee = async function() {
   const status = document.getElementById('searchStatus');
 
   if (!name && !team) {
-    status.textContent = "❌ 이름 또는 팀명을 입력해주세요!";
+    status.textContent = "이름 또는 팀명을 입력해주세요!";
     status.style.color = "#e74c3c";
     return;
   }
 
-  status.textContent = "🔍 검색 중...";
+  status.textContent = "검색 중...";
   status.style.color = "#3498db";
 
   try {
@@ -438,18 +438,18 @@ window.searchEmployee = async function() {
 
       if (filteredEmployees.length > 0) {
         displaySearchResults(filteredEmployees);
-        status.textContent = `✅ ${filteredEmployees.length}명을 찾았습니다!`;
+        status.textContent = `${filteredEmployees.length}명을 찾았습니다!`;
         status.style.color = "#27ae60";
       } else {
-        status.textContent = "❌ 해당 조건에 맞는 사람이 없습니다.";
+        status.textContent = "해당 조건에 맞는 사람이 없습니다.";
         status.style.color = "#e74c3c";
       }
     } else {
-      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.textContent = "저장된 데이터가 없습니다.";
       status.style.color = "#e74c3c";
     }
   } catch (error) {
-    status.textContent = "❌ 검색 실패: " + error.message;
+    status.textContent = "검색 실패: " + error.message;
     status.style.color = "#e74c3c";
   }
 };
@@ -996,15 +996,15 @@ window.adminLoadAll = async function() {
       });
 
       displayAdminTable(employees, employees.length);
-      status.textContent = `✅ 전체 ${employees.length}개의 데이터를 불러왔습니다.`;
+      status.textContent = `전체 ${employees.length}개의 데이터를 불러왔습니다.`;
       status.style.color = "#27ae60";
     } else {
       displayAdminTable([], 0);
-      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.textContent = "저장된 데이터가 없습니다.";
       status.style.color = "#e74c3c";
     }
   } catch (error) {
-    status.textContent = "❌ 데이터 로딩 실패: " + error.message;
+    status.textContent = "데이터 로딩 실패: " + error.message;
     status.style.color = "#e74c3c";
   }
 };
@@ -1016,12 +1016,12 @@ window.adminSearch = async function() {
   const status = document.getElementById('adminStatus');
 
   if (!name && !team) {
-    status.textContent = "❌ 이름 또는 팀명을 입력해주세요!";
+    status.textContent = "이름 또는 팀명을 입력해주세요!";
     status.style.color = "#e74c3c";
     return;
   }
 
-  status.textContent = "🔍 검색 중...";
+  status.textContent = "검색 중...";
   status.style.color = "#3498db";
 
   try {
@@ -1053,19 +1053,19 @@ window.adminSearch = async function() {
       displayAdminTable(employees, totalCount);
       
       if (employees.length > 0) {
-        status.textContent = `✅ ${employees.length}개의 데이터를 찾았습니다!`;
+        status.textContent = `${employees.length}개의 데이터를 찾았습니다!`;
         status.style.color = "#27ae60";
       } else {
-        status.textContent = "❌ 해당 조건에 맞는 데이터가 없습니다.";
+        status.textContent = "해당 조건에 맞는 데이터가 없습니다.";
         status.style.color = "#e74c3c";
       }
     } else {
       displayAdminTable([], 0);
-      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.textContent = "저장된 데이터가 없습니다.";
       status.style.color = "#e74c3c";
     }
   } catch (error) {
-    status.textContent = "❌ 검색 실패: " + error.message;
+    status.textContent = "검색 실패: " + error.message;
     status.style.color = "#e74c3c";
   }
 };
@@ -1453,24 +1453,31 @@ function displayComments(comments, employeeId) {
   }).join('');
 }
 
-// 댓글 수정
+// 댓글 수정 (내용만 수정 가능)
 window.editComment = async function(employeeId, commentId, currentAuthor, currentMessage) {
-  const newAuthor = prompt('이름 수정:', currentAuthor);
-  if (newAuthor === null) return; // 취소
-  
   const newMessage = prompt('메시지 수정:', currentMessage);
   if (newMessage === null) return; // 취소
   
-  if (!newAuthor.trim() || !newMessage.trim()) {
-    alert('이름과 메시지를 모두 입력해주세요!');
+  if (!newMessage.trim()) {
+    alert('메시지를 입력해주세요!');
     return;
   }
   
   try {
+    // 기존 댓글 데이터 가져오기
+    const snapshot = await get(ref(db, `comments/${employeeId}/${commentId}`));
+    if (!snapshot.exists()) {
+      alert('댓글을 찾을 수 없습니다.');
+      return;
+    }
+    
+    const originalData = snapshot.val();
+    
+    // 작성자와 작성 시간은 유지, 메시지만 업데이트
     await set(ref(db, `comments/${employeeId}/${commentId}`), {
-      author: newAuthor.trim(),
+      author: originalData.author,
       message: newMessage.trim(),
-      createdAt: new Date().toISOString(),
+      createdAt: originalData.createdAt,
       edited: true
     });
     
@@ -1542,7 +1549,7 @@ window.adminLoadAllComments = async function() {
     
     if (!employeesSnapshot.exists()) {
       displayAdminComments([], 0);
-      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.textContent = "저장된 데이터가 없습니다.";
       status.style.color = "#e74c3c";
       return;
     }
@@ -1603,7 +1610,7 @@ window.adminSearchComments = async function() {
     
     if (!employeesSnapshot.exists()) {
       displayAdminComments([], 0);
-      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.textContent = "저장된 데이터가 없습니다.";
       status.style.color = "#e74c3c";
       return;
     }
