@@ -437,7 +437,7 @@ window.searchEmployee = async function() {
       });
 
       if (filteredEmployees.length > 0) {
-        displaySearchResults(filteredEmployees);
+        await displaySearchResults(filteredEmployees);
         status.textContent = `${filteredEmployees.length}명을 찾았습니다!`;
         status.style.color = "#27ae60";
       } else {
@@ -455,11 +455,12 @@ window.searchEmployee = async function() {
 };
 
 // 검색 결과 표시
-function displaySearchResults(employees) {
+async function displaySearchResults(employees) {
   const resultsContainer = document.getElementById('searchResults');
   resultsContainer.innerHTML = '';
 
-  employees.forEach(employee => {
+  // 각 employee의 댓글 개수를 가져오기
+  for (const employee of employees) {
     const employeeCard = document.createElement('div');
     employeeCard.className = 'employee-card';
     
@@ -484,6 +485,10 @@ function displaySearchResults(employees) {
       const v = window.verses[Math.floor(Math.random() * window.verses.length)];
       verseHTML = `${v.content} <span style=\"display:block;opacity:.75;margin-top:4px;\">${v.reference}</span>`;
     }
+    
+    // 댓글 개수 가져오기
+    const commentCount = await getCommentCount(employee.id);
+    const badgeHTML = commentCount > 0 ? `<span class="message-badge">${commentCount}</span>` : '';
 
     employeeCard.innerHTML = `
       <div class="employee-avatar">
@@ -495,12 +500,15 @@ function displaySearchResults(employees) {
       </div>
       <div class="employee-actions">
         <button onclick="showEmployeeResult(${JSON.stringify(employee).replace(/"/g, '&quot;')})" class="btn-primary">상세보기</button>
-        <button onclick="showEmployeeMessages(${JSON.stringify(employee).replace(/"/g, '&quot;')})" class="btn-secondary">메시지</button>
+        <button onclick="showEmployeeMessages(${JSON.stringify(employee).replace(/"/g, '&quot;')})" class="btn-secondary message-btn">
+          메시지
+          ${badgeHTML}
+        </button>
         <button onclick="deleteEmployee('${employee.id}')" class="btn-danger">삭제</button>
       </div>
     `;
     resultsContainer.appendChild(employeeCard);
-  });
+  }
 
   // searchPage에 그대로 유지 (resultPage로 이동하지 않음)
 }

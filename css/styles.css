@@ -2401,6 +2401,7 @@ input[type="file"] {
   letter-spacing: 1.5px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(12, 68, 59, 0.15);
+  position: relative;
 }
 
 .employee-actions .btn-secondary:hover {
@@ -2408,6 +2409,27 @@ input[type="file"] {
   border-color: rgba(12, 68, 59, 0.6);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(12, 68, 59, 0.25);
+}
+
+/* 메시지 알림 배지 (카카오톡/인스타 스타일) */
+.message-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: rgba(12, 68, 59, 1);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0;
+  line-height: 1;
 }
 
 .employee-actions .btn-danger {
