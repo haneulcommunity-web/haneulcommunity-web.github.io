@@ -24,6 +24,7 @@ const VIEW_LOADER = {
       'avatar',
       'search',
       'result',
+      'messages',
       'admin',
       'edit-modal'
     ];

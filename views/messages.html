@@ -1,0 +1,35 @@
+<!-- 메시지(댓글) 페이지 -->
+<div id="messagesPage" class="page">
+  <div class="messages-container">
+    <!-- 헤더 -->
+    <div class="messages-header">
+      <button class="btn-back" onclick="showPage('searchPage')">← 돌아가기</button>
+      <h2 id="messagesTitle">응원 메시지</h2>
+    </div>
+
+    <!-- 아바타 정보 -->
+    <div class="messages-profile">
+      <div class="profile-avatar" id="messageAvatar">
+        <!-- 아바타가 여기에 표시됩니다 -->
+      </div>
+      <div class="profile-info">
+        <h3 id="messageName">이름</h3>
+        <p id="messageTeam">팀명</p>
+      </div>
+    </div>
+
+    <!-- 댓글 작성 폼 -->
+    <div class="comment-form">
+      <input type="text" id="messageCommentAuthor" class="comment-input" placeholder="이름" maxlength="20">
+      <textarea id="messageCommentMessage" class="comment-textarea" placeholder="응원 메시지를 남겨주세요." maxlength="200"></textarea>
+      <button class="comment-submit-btn" onclick="addMessageComment()">메시지 남기기</button>
+      <div id="messageCommentStatus" class="comment-status"></div>
+    </div>
+
+    <!-- 댓글 목록 -->
+    <div class="comments-list" id="messagesCommentsList">
+      <!-- 댓글이 동적으로 추가됩니다 -->
+    </div>
+  </div>
+</div>
+

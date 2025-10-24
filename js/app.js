@@ -399,13 +399,6 @@ window.searchEmployee = async function() {
   const team = document.getElementById('searchTeam').value.trim();
   const status = document.getElementById('searchStatus');
 
-  // 마스터 모드 체크 (이름: 마스터, 팀명: 마스터)
-  if (name === '마스터' && team === '마스터') {
-    showPage('adminPage');
-    adminLoadAll();
-    return;
-  }
-
   if (!name && !team) {
     status.textContent = "❌ 이름 또는 팀명을 입력해주세요!";
     status.style.color = "#e74c3c";
@@ -496,6 +489,7 @@ function displaySearchResults(employees) {
       </div>
       <div class="employee-actions">
         <button onclick="showEmployeeResult(${JSON.stringify(employee).replace(/"/g, '&quot;')})" class="btn-primary">상세보기</button>
+        <button onclick="showEmployeeMessages(${JSON.stringify(employee).replace(/"/g, '&quot;')})" class="btn-secondary">메시지</button>
         <button onclick="deleteEmployee('${employee.id}')" class="btn-danger">삭제</button>
       </div>
     `;
@@ -507,7 +501,7 @@ function displaySearchResults(employees) {
 
 // 상세 결과 표시 (HTML에서 호출)
 window.showEmployeeResult = function(employee) {
-  // 현재 정보를 전역 변수에 저장 (다운로드용)
+  // 현재 정보를 전역 변수에 저장 (다운로드 및 댓글용)
   window.currentEmployee = employee;
   
   // 카드 내용 생성
@@ -664,13 +658,16 @@ window.showEmployeeResult = function(employee) {
 
 // 삭제 함수 (HTML에서 호출)
 window.deleteEmployee = async function(employeeId) {
-  if (!confirm('정말로 이 데이터를 삭제하시겠습니까?')) {
+  if (!confirm('정말로 이 데이터를 삭제하시겠습니까?\n\n관련된 모든 댓글도 함께 삭제됩니다.')) {
     return;
   }
 
   try {
-    // Firebase에서 삭제
+    // Firebase에서 employee 삭제
     await remove(ref(db, `employees/${employeeId}`));
+    
+    // 관련된 댓글도 모두 삭제
+    await remove(ref(db, `comments/${employeeId}`));
     
     // 화면에서 해당 카드 찾기
     const resultsContainer = document.getElementById('searchResults');
@@ -1228,12 +1225,16 @@ window.saveEdit = async function() {
 
 // 관리자 페이지에서 삭제
 window.adminDeleteEmployee = async function(employeeId) {
-  if (!confirm('정말로 이 데이터를 삭제하시겠습니까?')) {
+  if (!confirm('정말로 이 데이터를 삭제하시겠습니까?\n\n관련된 모든 댓글도 함께 삭제됩니다.')) {
     return;
   }
 
   try {
+    // Firebase에서 employee 삭제
     await remove(ref(db, `employees/${employeeId}`));
+    
+    // 관련된 댓글도 모두 삭제
+    await remove(ref(db, `comments/${employeeId}`));
     
     // 테이블에서 해당 행 찾기
     const row = document.querySelector(`tr[data-employee-id="${employeeId}"]`);
@@ -1276,6 +1277,488 @@ window.addEventListener('click', function(event) {
     closeEditModal();
   }
 });
+
+// ============================================
+// 메시지(댓글) 페이지 표시
+// ============================================
+
+// 메시지 페이지 표시
+window.showEmployeeMessages = function(employee) {
+  // 현재 정보를 전역 변수에 저장
+  window.currentEmployee = employee;
+  
+  // 아바타 정보 표시
+  document.getElementById('messagesTitle').textContent = `${employee.name}님의 응원 메시지`;
+  document.getElementById('messageName').textContent = employee.name;
+  document.getElementById('messageTeam').textContent = employee.team;
+  
+  // 아바타 이미지 표시
+  const avatarContainer = document.getElementById('messageAvatar');
+  let avatarHTML = '';
+  if (employee.avatarData) {
+    try {
+      const avatarData = typeof employee.avatarData === 'string' ? JSON.parse(employee.avatarData) : employee.avatarData;
+      avatarHTML = generateAvatarSVG(avatarData);
+    } catch (e) {
+      avatarHTML = '<div class="no-avatar">아바타 없음</div>';
+    }
+  } else {
+    avatarHTML = '<div class="no-avatar">아바타 없음</div>';
+  }
+  avatarContainer.innerHTML = avatarHTML;
+  
+  // 댓글 로드
+  if (employee.id) {
+    loadMessagesComments(employee.id);
+  }
+  
+  showPage('messagesPage');
+};
+
+// ============================================
+// 댓글 기능
+// ============================================
+
+// 메시지 페이지에서 댓글 추가
+window.addMessageComment = async function() {
+  const author = document.getElementById('messageCommentAuthor').value.trim();
+  const message = document.getElementById('messageCommentMessage').value.trim();
+  const status = document.getElementById('messageCommentStatus');
+  
+  if (!author || !message) {
+    status.textContent = "이름과 메시지를 모두 입력해주세요!";
+    status.style.color = "#e74c3c";
+    return;
+  }
+  
+  if (!window.currentEmployee || !window.currentEmployee.id) {
+    status.textContent = "사용자 정보를 찾을 수 없습니다.";
+    status.style.color = "#e74c3c";
+    return;
+  }
+  
+  status.textContent = "메시지 등록 중...";
+  status.style.color = "#3498db";
+  
+  try {
+    const employeeId = window.currentEmployee.id;
+    const commentData = {
+      author: author,
+      message: message,
+      createdAt: new Date().toISOString()
+    };
+    
+    // Firebase에 댓글 저장
+    await push(ref(db, `comments/${employeeId}`), commentData);
+    
+    // 입력 필드 초기화
+    document.getElementById('messageCommentAuthor').value = '';
+    document.getElementById('messageCommentMessage').value = '';
+    
+    status.textContent = "메시지가 등록되었습니다!";
+    status.style.color = "#27ae60";
+    
+    // 댓글 목록 새로고침
+    setTimeout(() => {
+      loadMessagesComments(employeeId);
+      status.textContent = "";
+    }, 1500);
+    
+  } catch (error) {
+    status.textContent = "메시지 등록 실패: " + error.message;
+    status.style.color = "#e74c3c";
+  }
+};
+
+// 메시지 페이지 댓글 목록 불러오기
+async function loadMessagesComments(employeeId) {
+  const commentsList = document.getElementById('messagesCommentsList');
+  
+  if (!commentsList || !employeeId) return;
+  
+  try {
+    const snapshot = await get(ref(db, `comments/${employeeId}`));
+    
+    if (snapshot.exists()) {
+      const comments = [];
+      snapshot.forEach(childSnapshot => {
+        comments.push({
+          id: childSnapshot.key,
+          ...childSnapshot.val()
+        });
+      });
+      
+      // 최신순 정렬
+      comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      displayComments(comments, employeeId);
+    } else {
+      commentsList.innerHTML = '<div class="no-comments">아직 응원 메시지가 없습니다. 첫 번째 메시지를 남겨주세요!</div>';
+    }
+  } catch (error) {
+    console.error('Failed to load comments:', error);
+    commentsList.innerHTML = '<div class="no-comments">댓글을 불러오는데 실패했습니다.</div>';
+  }
+}
+
+// 댓글 표시
+function displayComments(comments, employeeId) {
+  const commentsList = document.getElementById('commentsList');
+  
+  if (!commentsList) return;
+  
+  if (comments.length === 0) {
+    commentsList.innerHTML = '<div class="no-comments">아직 응원 메시지가 없습니다. 첫 번째 메시지를 남겨주세요!</div>';
+    return;
+  }
+  
+  commentsList.innerHTML = comments.map(comment => {
+    const date = new Date(comment.createdAt);
+    const formattedDate = date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    
+      return `
+      <div class="comment-item" data-comment-id="${comment.id}">
+        <div class="comment-header">
+          <span class="comment-author">${comment.author}</span>
+          <span class="comment-date">${formattedDate}</span>
+        </div>
+        <div class="comment-message">${comment.message}</div>
+        <div class="comment-actions">
+          <button class="comment-edit-btn" onclick="editComment('${employeeId}', '${comment.id}', '${comment.author.replace(/'/g, "\\'")}', '${comment.message.replace(/'/g, "\\'")}')">수정</button>
+          <button class="comment-delete-btn" onclick="deleteComment('${employeeId}', '${comment.id}')">삭제</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 댓글 수정
+window.editComment = async function(employeeId, commentId, currentAuthor, currentMessage) {
+  const newAuthor = prompt('이름 수정:', currentAuthor);
+  if (newAuthor === null) return; // 취소
+  
+  const newMessage = prompt('메시지 수정:', currentMessage);
+  if (newMessage === null) return; // 취소
+  
+  if (!newAuthor.trim() || !newMessage.trim()) {
+    alert('이름과 메시지를 모두 입력해주세요!');
+    return;
+  }
+  
+  try {
+    await set(ref(db, `comments/${employeeId}/${commentId}`), {
+      author: newAuthor.trim(),
+      message: newMessage.trim(),
+      createdAt: new Date().toISOString(),
+      edited: true
+    });
+    
+    // 댓글 목록 새로고침
+    await loadMessagesComments(employeeId);
+    
+    alert('메시지가 수정되었습니다!');
+  } catch (error) {
+    alert('수정 실패: ' + error.message);
+  }
+};
+
+// 댓글 삭제
+window.deleteComment = async function(employeeId, commentId) {
+  if (!confirm('이 메시지를 삭제하시겠습니까?')) {
+    return;
+  }
+  
+  try {
+    await remove(ref(db, `comments/${employeeId}/${commentId}`));
+    
+    // 댓글 목록 새로고침
+    await loadMessagesComments(employeeId);
+    
+  } catch (error) {
+    alert('삭제 실패: ' + error.message);
+  }
+};
+
+// 댓글 개수 가져오기
+async function getCommentCount(employeeId) {
+  try {
+    const snapshot = await get(ref(db, `comments/${employeeId}`));
+    return snapshot.exists() ? snapshot.size : 0;
+  } catch (error) {
+    console.error('Failed to get comment count:', error);
+    return 0;
+  }
+}
+
+// ============================================
+// 관리자 페이지 - 댓글 관리
+// ============================================
+
+// 관리자 탭 전환
+window.switchAdminTab = function(tab) {
+  // 탭 버튼 활성화
+  document.querySelectorAll('.admin-tab').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  // 탭 컨텐츠 전환
+  document.querySelectorAll('.admin-tab-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  
+  if (tab === 'employees') {
+    document.getElementById('employeesTab').classList.add('active');
+  } else if (tab === 'comments') {
+    document.getElementById('commentsTab').classList.add('active');
+    // 댓글 관리 탭을 열면 자동으로 전체 댓글 로드
+    adminLoadAllComments();
+  }
+};
+
+// 전체 댓글 로드
+window.adminLoadAllComments = async function() {
+  const status = document.getElementById('commentAdminStatus');
+  status.textContent = "댓글 로딩 중...";
+  status.style.color = "#3498db";
+  
+  try {
+    // 모든 employees 가져오기
+    const employeesSnapshot = await get(ref(db, "employees"));
+    
+    if (!employeesSnapshot.exists()) {
+      displayAdminComments([], 0);
+      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.style.color = "#e74c3c";
+      return;
+    }
+    
+    const employeesData = employeesSnapshot.val();
+    const allComments = [];
+    
+    // 각 employee의 댓글 가져오기
+    for (const employeeId in employeesData) {
+      const employee = employeesData[employeeId];
+      const commentsSnapshot = await get(ref(db, `comments/${employeeId}`));
+      
+      if (commentsSnapshot.exists()) {
+        const comments = commentsSnapshot.val();
+        for (const commentId in comments) {
+          allComments.push({
+            commentId: commentId,
+            employeeId: employeeId,
+            employeeName: employee.name,
+            employeeTeam: employee.team,
+            ...comments[commentId]
+          });
+        }
+      }
+    }
+    
+    // 최신순 정렬
+    allComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    displayAdminComments(allComments, allComments.length);
+    status.textContent = `전체 ${allComments.length}개의 댓글을 불러왔습니다.`;
+    status.style.color = "#27ae60";
+    
+  } catch (error) {
+    status.textContent = "댓글 로딩 실패: " + error.message;
+    status.style.color = "#e74c3c";
+  }
+};
+
+// 댓글 검색
+window.adminSearchComments = async function() {
+  const searchName = document.getElementById('commentSearchName').value.trim();
+  const searchAuthor = document.getElementById('commentSearchAuthor').value.trim();
+  const status = document.getElementById('commentAdminStatus');
+  
+  if (!searchName && !searchAuthor) {
+    status.textContent = "아바타 이름 또는 작성자를 입력해주세요!";
+    status.style.color = "#e74c3c";
+    return;
+  }
+  
+  status.textContent = "검색 중...";
+  status.style.color = "#3498db";
+  
+  try {
+    // 모든 employees 가져오기
+    const employeesSnapshot = await get(ref(db, "employees"));
+    
+    if (!employeesSnapshot.exists()) {
+      displayAdminComments([], 0);
+      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.style.color = "#e74c3c";
+      return;
+    }
+    
+    const employeesData = employeesSnapshot.val();
+    const allComments = [];
+    
+    // 각 employee의 댓글 가져오기
+    for (const employeeId in employeesData) {
+      const employee = employeesData[employeeId];
+      
+      // 아바타 이름으로 필터링
+      if (searchName && !employee.name.includes(searchName)) {
+        continue;
+      }
+      
+      const commentsSnapshot = await get(ref(db, `comments/${employeeId}`));
+      
+      if (commentsSnapshot.exists()) {
+        const comments = commentsSnapshot.val();
+        for (const commentId in comments) {
+          const comment = comments[commentId];
+          
+          // 작성자로 필터링
+          if (searchAuthor && !comment.author.includes(searchAuthor)) {
+            continue;
+          }
+          
+          allComments.push({
+            commentId: commentId,
+            employeeId: employeeId,
+            employeeName: employee.name,
+            employeeTeam: employee.team,
+            ...comment
+          });
+        }
+      }
+    }
+    
+    // 최신순 정렬
+    allComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    displayAdminComments(allComments, allComments.length);
+    
+    if (allComments.length > 0) {
+      status.textContent = `${allComments.length}개의 댓글을 찾았습니다!`;
+      status.style.color = "#27ae60";
+    } else {
+      status.textContent = "해당 조건에 맞는 댓글이 없습니다.";
+      status.style.color = "#e74c3c";
+    }
+    
+  } catch (error) {
+    status.textContent = "검색 실패: " + error.message;
+    status.style.color = "#e74c3c";
+  }
+};
+
+// 관리자 댓글 표시
+function displayAdminComments(comments, totalCount) {
+  const tbody = document.getElementById('adminCommentTableBody');
+  tbody.innerHTML = '';
+  
+  // 통계 업데이트
+  document.getElementById('totalCommentCount').textContent = totalCount;
+  document.getElementById('filteredCommentCount').textContent = comments.length;
+  
+  if (comments.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#999;">댓글이 없습니다.</td></tr>';
+    return;
+  }
+  
+  comments.forEach(comment => {
+    const tr = document.createElement('tr');
+    tr.dataset.commentId = comment.commentId;
+    tr.dataset.employeeId = comment.employeeId;
+    
+    // 아바타 이름
+    const nameTd = document.createElement('td');
+    nameTd.innerHTML = `<strong>${comment.employeeName}</strong><br><small style="color:#999;">${comment.employeeTeam}</small>`;
+    tr.appendChild(nameTd);
+    
+    // 작성자
+    const authorTd = document.createElement('td');
+    authorTd.textContent = comment.author || '-';
+    tr.appendChild(authorTd);
+    
+    // 메시지
+    const messageTd = document.createElement('td');
+    messageTd.textContent = comment.message.length > 50 ? comment.message.substring(0, 50) + '...' : comment.message;
+    messageTd.style.fontSize = '0.9em';
+    tr.appendChild(messageTd);
+    
+    // 작성일
+    const dateTd = document.createElement('td');
+    if (comment.createdAt) {
+      const date = new Date(comment.createdAt);
+      dateTd.textContent = date.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } else {
+      dateTd.textContent = '-';
+    }
+    dateTd.style.fontSize = '0.85em';
+    tr.appendChild(dateTd);
+    
+    // 관리 버튼
+    const actionTd = document.createElement('td');
+    actionTd.innerHTML = `
+      <button class="admin-btn admin-btn-delete" onclick="adminDeleteComment('${comment.employeeId}', '${comment.commentId}')">삭제</button>
+    `;
+    tr.appendChild(actionTd);
+    
+    tbody.appendChild(tr);
+  });
+}
+
+// 관리자 댓글 삭제
+window.adminDeleteComment = async function(employeeId, commentId) {
+  if (!confirm('이 댓글을 삭제하시겠습니까?')) {
+    return;
+  }
+  
+  try {
+    await remove(ref(db, `comments/${employeeId}/${commentId}`));
+    
+    // 테이블에서 해당 행 찾기
+    const row = document.querySelector(`tr[data-comment-id="${commentId}"][data-employee-id="${employeeId}"]`);
+    
+    if (row) {
+      // 페이드아웃 애니메이션
+      row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      row.style.opacity = '0';
+      row.style.transform = 'scale(0.95)';
+      
+      setTimeout(() => {
+        row.remove();
+        
+        // 통계 업데이트
+        const currentTotal = parseInt(document.getElementById('totalCommentCount').textContent);
+        const currentFiltered = parseInt(document.getElementById('filteredCommentCount').textContent);
+        document.getElementById('totalCommentCount').textContent = currentTotal - 1;
+        document.getElementById('filteredCommentCount').textContent = currentFiltered - 1;
+        
+        // 남은 행 확인
+        const tbody = document.getElementById('adminCommentTableBody');
+        if (tbody.children.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#999;">댓글이 없습니다.</td></tr>';
+        }
+        
+        const status = document.getElementById('commentAdminStatus');
+        status.textContent = "댓글 삭제 완료!";
+        status.style.color = "#27ae60";
+      }, 300);
+    }
+  } catch (error) {
+    alert('삭제 실패: ' + error.message);
+  }
+};
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
