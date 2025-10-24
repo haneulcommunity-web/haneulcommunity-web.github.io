@@ -1,10 +1,14 @@
 <!-- 아바타 생성 페이지 -->
 <div id="avatarPage" class="page">
   <div class="avatar-fullscreen-container">
-    <!-- 상단 헤더 -->
-    <div class="avatar-header-bar">
-      <h2 class="avatar-page-title">아바타 생성</h2>
-      <button onclick="showPage('mainPage')" class="btn-back">← 메인으로</button>
+    <!-- 통일된 네비게이션 바 -->
+    <div class="page-navbar">
+      <button class="navbar-back" onclick="showPage('mainPage')">
+        <span class="back-arrow">←</span>
+        <span class="back-text">뒤로</span>
+      </button>
+      <h2 class="navbar-title">아바타 생성</h2>
+      <div class="navbar-spacer"></div>
     </div>
 
     <!-- 아바타 저장 폼 -->

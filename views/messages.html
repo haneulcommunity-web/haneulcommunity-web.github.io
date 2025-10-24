@@ -1,11 +1,16 @@
 <!-- 메시지(댓글) 페이지 -->
 <div id="messagesPage" class="page">
+  <!-- 통일된 네비게이션 바 -->
+  <div class="page-navbar">
+    <button class="navbar-back" onclick="showPage('searchPage')">
+      <span class="back-arrow">←</span>
+      <span class="back-text">뒤로</span>
+    </button>
+    <h2 class="navbar-title" id="messagesTitle">응원 메시지</h2>
+    <div class="navbar-spacer"></div>
+  </div>
+  
   <div class="messages-container">
-    <!-- 헤더 -->
-    <div class="messages-header">
-      <button class="btn-back" onclick="showPage('searchPage')">← 돌아가기</button>
-      <h2 id="messagesTitle">응원 메시지</h2>
-    </div>
 
     <!-- 아바타 정보 -->
     <div class="messages-profile">

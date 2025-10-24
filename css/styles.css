@@ -1887,18 +1887,7 @@ input[type="file"] {
   gap: clamp(15px, 2vw, 20px);
 }
 
-/* 상단 헤더 바 */
-.avatar-header-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  padding: clamp(15px, 3vw, 25px) clamp(20px, 4vw, 40px);
-  border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
+/* 상단 헤더 바 - 통일된 네비게이션 바로 대체됨 */
 
 .avatar-page-title {
   font-size: clamp(20px, 4vw, 28px);
@@ -2455,6 +2444,124 @@ input[type="file"] {
   box-shadow: 0 6px 16px rgba(220, 53, 69, 0.25);
 }
 
+/* ============================================ */
+/* 통일된 페이지 네비게이션 바 */
+/* ============================================ */
+
+.page-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(12, 68, 59, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 64px;
+}
+
+.navbar-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: rgba(12, 68, 59, 1);
+  font-size: 15px;
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.navbar-back:hover {
+  background: rgba(12, 68, 59, 0.08);
+  transform: translateX(-2px);
+}
+
+.navbar-back .back-arrow {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.navbar-back .back-text {
+  letter-spacing: 0.5px;
+}
+
+.navbar-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 18px;
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 500;
+  color: rgba(12, 68, 59, 1);
+  letter-spacing: 1px;
+}
+
+.navbar-spacer {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+/* 네비게이션 바 반응형 */
+@media (max-width: 768px) {
+  .page-navbar {
+    padding: 12px 16px;
+    min-height: 56px;
+  }
+  
+  .navbar-title {
+    font-size: 16px;
+  }
+  
+  .navbar-back {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  
+  .navbar-back .back-arrow {
+    font-size: 18px;
+  }
+  
+  .navbar-spacer {
+    width: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-navbar {
+    padding: 10px 12px;
+    min-height: 52px;
+  }
+  
+  .navbar-title {
+    font-size: 15px;
+    max-width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .navbar-back .back-text {
+    display: none;
+  }
+  
+  .navbar-back {
+    padding: 6px 8px;
+  }
+  
+  .navbar-spacer {
+    width: 40px;
+  }
+}
 
 /* 버튼 기본 스타일 */
 .btn {
@@ -2728,12 +2835,6 @@ input[type="file"] {
     height: 100vh;
   }
   
-  .avatar-header-bar {
-    padding: 15px 20px;
-    flex-wrap: wrap;
-    gap: 12px;
-    flex-shrink: 0;
-  }
   
   .avatar-save-section {
     padding: 15px 20px;
@@ -2785,20 +2886,6 @@ input[type="file"] {
     gap: 12px;
   }
   
-  .avatar-header-bar {
-    padding: 12px 15px;
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-  }
-  
-  .avatar-page-title {
-    margin-bottom: 8px;
-  }
-  
-  .btn-back {
-    width: 100%;
-  }
   
   .avatar-save-section {
     padding: 15px;
@@ -2870,9 +2957,6 @@ input[type="file"] {
     gap: 10px;
   }
   
-  .avatar-header-bar {
-    padding: 10px 12px;
-  }
   
   .avatar-save-section {
     padding: 12px;
@@ -2932,9 +3016,6 @@ input[type="file"] {
     gap: 8px;
   }
   
-  .avatar-header-bar {
-    padding: 8px 10px;
-  }
   
   .avatar-save-section {
     padding: 10px;
@@ -3191,21 +3272,7 @@ input[type="file"] {
   }
 }
 
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 35px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  padding: 28px 35px;
-  border-radius: 24px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  position: relative;
-  z-index: 1;
-  animation: slideDown 0.5s ease-out;
-}
+/* admin-header - 통일된 네비게이션 바로 대체됨 */
 
 @keyframes slideDown {
   from {
@@ -3218,16 +3285,6 @@ input[type="file"] {
   }
 }
 
-.admin-header h1 {
-  font-size: 32px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin: 0;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
 
 /* 관리자 탭 */
 .admin-tabs {
@@ -3774,17 +3831,6 @@ input[type="file"] {
     padding: 24px 12px;
   }
   
-  .admin-header {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-    padding: 24px 20px;
-    border-radius: 20px;
-  }
-  
-  .admin-header h1 {
-    font-size: 26px;
-  }
   
   .admin-search-section {
     padding: 24px 20px;
@@ -3830,14 +3876,6 @@ input[type="file"] {
     padding: 20px 10px;
   }
   
-  .admin-header {
-    padding: 20px 16px;
-    border-radius: 18px;
-  }
-  
-  .admin-header h1 {
-    font-size: 22px;
-  }
   
   .admin-search-section {
     padding: 20px 16px;
@@ -3900,26 +3938,7 @@ input[type="file"] {
   overflow: auto;
 }
 
-.messages-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 90%;
-  max-width: 800px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.messages-header h2 {
-  font-size: clamp(24px, 4vw, 32px);
-  color: rgba(12, 68, 59, 1);
-  font-family: 'Noto Serif KR', serif;
-  font-weight: 400;
-  letter-spacing: 2px;
-  margin: 0;
-  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
-}
+/* messages-header - 통일된 네비게이션 바로 대체됨 */
 
 .messages-profile {
   background: rgba(255, 255, 255, 0.95);
@@ -4230,21 +4249,6 @@ input[type="file"] {
     padding: 24px 12px;
   }
   
-  .messages-header {
-    width: 95%;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .messages-header h2 {
-    font-size: 22px;
-    order: 2;
-  }
-  
-  .messages-header .btn-back {
-    order: 1;
-    width: 100%;
-  }
   
   .messages-profile {
     width: 95%;
@@ -4302,13 +4306,6 @@ input[type="file"] {
     padding: 20px 10px;
   }
   
-  .messages-header {
-    margin-bottom: 20px;
-  }
-  
-  .messages-header h2 {
-    font-size: 20px;
-  }
   
   .messages-profile {
     padding: 16px 12px;
