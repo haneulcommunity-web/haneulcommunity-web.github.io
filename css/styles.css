@@ -2445,7 +2445,7 @@ input[type="file"] {
 }
 
 /* ============================================ */
-/* 통일된 페이지 네비게이션 바 */
+/* 통일된 페이지 네비게이션 바 (메인 버튼 디자인 적용) */
 /* ============================================ */
 
 .page-navbar {
@@ -2453,10 +2453,10 @@ input[type="file"] {
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(12, 68, 59, 0.1);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-bottom: 2px solid rgba(12, 68, 59, 0.4);
+  box-shadow: 0 4px 15px rgba(12, 68, 59, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -2467,31 +2467,35 @@ input[type="file"] {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(12, 68, 59, 0.4);
   color: rgba(12, 68, 59, 1);
   font-size: 15px;
-  font-family: 'Noto Serif KR', serif;
-  font-weight: 400;
+  font-family: 'GungnipClassic', serif;
+  font-weight: 300;
   cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  letter-spacing: 1px;
 }
 
 .navbar-back:hover {
-  background: rgba(12, 68, 59, 0.08);
-  transform: translateX(-2px);
+  background: rgba(12, 68, 59, 0.12);
+  border-color: rgba(12, 68, 59, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(12, 68, 59, 0.18);
 }
 
 .navbar-back .back-arrow {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 400;
   line-height: 1;
 }
 
 .navbar-back .back-text {
-  letter-spacing: 0.5px;
+  letter-spacing: 2px;
 }
 
 .navbar-title {
@@ -2499,15 +2503,16 @@ input[type="file"] {
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  font-size: 18px;
-  font-family: 'Noto Serif KR', serif;
-  font-weight: 500;
+  font-size: 20px;
+  font-family: 'GungnipClassic', serif;
+  font-weight: 300;
   color: rgba(12, 68, 59, 1);
-  letter-spacing: 1px;
+  letter-spacing: 3px;
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
 }
 
 .navbar-spacer {
-  width: 80px;
+  width: 100px;
   flex-shrink: 0;
 }
 
@@ -2519,20 +2524,21 @@ input[type="file"] {
   }
   
   .navbar-title {
-    font-size: 16px;
+    font-size: 18px;
+    letter-spacing: 2px;
   }
   
   .navbar-back {
-    padding: 6px 12px;
+    padding: 8px 16px;
     font-size: 14px;
   }
   
   .navbar-back .back-arrow {
-    font-size: 18px;
+    font-size: 16px;
   }
   
   .navbar-spacer {
-    width: 60px;
+    width: 80px;
   }
 }
 
@@ -2543,7 +2549,8 @@ input[type="file"] {
   }
   
   .navbar-title {
-    font-size: 15px;
+    font-size: 16px;
+    letter-spacing: 1px;
     max-width: 60%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2555,11 +2562,15 @@ input[type="file"] {
   }
   
   .navbar-back {
-    padding: 6px 8px;
+    padding: 8px 12px;
+  }
+  
+  .navbar-back .back-arrow {
+    font-size: 18px;
   }
   
   .navbar-spacer {
-    width: 40px;
+    width: 50px;
   }
 }
 
