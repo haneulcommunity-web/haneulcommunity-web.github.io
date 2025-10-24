@@ -1258,6 +1258,111 @@ window.adminSearch = async function() {
   }
 };
 
+// 필터 초기화
+window.clearFilters = function() {
+  document.getElementById('adminSearchName').value = '';
+  document.getElementById('adminSearchTeam').value = '';
+  document.getElementById('adminSearchDateFrom').value = '';
+  document.getElementById('adminSearchDateTo').value = '';
+  document.getElementById('adminSortBy').value = 'createdAt';
+  document.getElementById('adminSortOrder').value = 'desc';
+  
+  if (typeof adminLoadAll === 'function') {
+    adminLoadAll();
+  }
+};
+
+// 실시간 검색을 위한 이벤트 리스너 추가
+window.addEventListener('DOMContentLoaded', function() {
+  // 아바타 관리 탭의 검색 필드에 실시간 검색 추가
+  const nameInput = document.getElementById('adminSearchName');
+  const teamInput = document.getElementById('adminSearchTeam');
+  const dateFromInput = document.getElementById('adminSearchDateFrom');
+  const dateToInput = document.getElementById('adminSearchDateTo');
+  
+  if (nameInput) {
+    nameInput.addEventListener('input', debounce(adminSearch, 500));
+  }
+  if (teamInput) {
+    teamInput.addEventListener('input', debounce(adminSearch, 500));
+  }
+  if (dateFromInput) {
+    dateFromInput.addEventListener('change', adminSearch);
+  }
+  if (dateToInput) {
+    dateToInput.addEventListener('change', adminSearch);
+  }
+  
+  // 정렬 옵션 변경 시 자동 재정렬
+  const sortBySelect = document.getElementById('adminSortBy');
+  const sortOrderSelect = document.getElementById('adminSortOrder');
+  
+  if (sortBySelect) {
+    sortBySelect.addEventListener('change', adminSearch);
+  }
+  if (sortOrderSelect) {
+    sortOrderSelect.addEventListener('change', adminSearch);
+  }
+  
+  // 댓글 관리 탭의 검색 필드에 실시간 검색 추가
+  const commentNameInput = document.getElementById('commentSearchName');
+  const commentAuthorInput = document.getElementById('commentSearchAuthor');
+  
+  if (commentNameInput) {
+    commentNameInput.addEventListener('input', debounce(adminSearchComments, 500));
+  }
+  if (commentAuthorInput) {
+    commentAuthorInput.addEventListener('input', debounce(adminSearchComments, 500));
+  }
+  
+  // 댓글 정렬 옵션 변경 시 자동 재정렬
+  const commentSortBySelect = document.getElementById('commentSortBy');
+  const commentSortOrderSelect = document.getElementById('commentSortOrder');
+  
+  if (commentSortBySelect) {
+    commentSortBySelect.addEventListener('change', adminLoadAllComments);
+  }
+  if (commentSortOrderSelect) {
+    commentSortOrderSelect.addEventListener('change', adminLoadAllComments);
+  }
+  
+  // 관리자 페이지가 로드되면 자동으로 데이터 로드
+  if (window.location.pathname.includes('admin.html') || document.getElementById('adminPage')) {
+    setTimeout(() => {
+      if (typeof adminLoadAll === 'function') {
+        adminLoadAll();
+      }
+    }, 100);
+  }
+});
+
+// 디바운스 함수 (연속된 입력을 방지)
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// 댓글 필터 초기화
+window.clearCommentFilters = function() {
+  document.getElementById('commentSearchName').value = '';
+  document.getElementById('commentSearchAuthor').value = '';
+  document.getElementById('commentSearchDateFrom').value = '';
+  document.getElementById('commentSearchDateTo').value = '';
+  document.getElementById('commentSortBy').value = 'createdAt';
+  document.getElementById('commentSortOrder').value = 'desc';
+  
+  if (typeof adminLoadAllComments === 'function') {
+    adminLoadAllComments();
+  }
+};
+
 // 관리자 테이블 표시
 function displayAdminTable(employees, totalCount) {
   const tbody = document.getElementById('adminTableBody');

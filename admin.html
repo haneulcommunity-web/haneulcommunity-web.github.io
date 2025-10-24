@@ -452,19 +452,7 @@
       downloadCSV(csvContent, 'selected_avatars.csv');
     }
 
-    // 필터 초기화
-    function clearFilters() {
-      document.getElementById('adminSearchName').value = '';
-      document.getElementById('adminSearchTeam').value = '';
-      document.getElementById('adminSearchDateFrom').value = '';
-      document.getElementById('adminSearchDateTo').value = '';
-      document.getElementById('adminSortBy').value = 'createdAt';
-      document.getElementById('adminSortOrder').value = 'desc';
-      
-      if (typeof adminLoadAll === 'function') {
-        adminLoadAll();
-      }
-    }
+    // 필터 초기화 함수는 js/app.js에 정의됨
 
     // ===== 댓글 관리 기능 =====
     
@@ -598,19 +586,7 @@
       downloadCSV(csvContent, 'selected_comments.csv');
     }
 
-    // 댓글 필터 초기화
-    function clearCommentFilters() {
-      document.getElementById('commentSearchName').value = '';
-      document.getElementById('commentSearchAuthor').value = '';
-      document.getElementById('commentSearchDateFrom').value = '';
-      document.getElementById('commentSearchDateTo').value = '';
-      document.getElementById('commentSortBy').value = 'createdAt';
-      document.getElementById('commentSortOrder').value = 'desc';
-      
-      if (typeof adminLoadAllComments === 'function') {
-        adminLoadAllComments();
-      }
-    }
+    // 댓글 필터 초기화 함수는 js/app.js에 정의됨
 
     // ===== 유틸리티 함수 =====
     
