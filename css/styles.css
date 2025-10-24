@@ -404,9 +404,7 @@ input[type="file"] {
   touch-action: pan-y;
 }
 
-.card-flip-container:hover {
-  filter: brightness(1.02);
-}
+/* 호버 효과 제거됨 */
 
 .card-flip-container.flipped {
   transform: rotateY(180deg);
