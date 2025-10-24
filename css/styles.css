@@ -2519,7 +2519,6 @@ input[type="file"] {
   background: rgba(255, 255, 255, 0.2);
   border: 2px solid rgba(12, 68, 59, 0.4);
   color: rgba(12, 68, 59, 1);
-  font-size: 20px;
   border-radius: 50%;
   width: 44px;
   height: 44px;
@@ -2530,6 +2529,7 @@ input[type="file"] {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  padding: 0;
 }
 
 .navbar-home:hover {
@@ -2538,6 +2538,44 @@ input[type="file"] {
   color: rgba(12, 68, 59, 1);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(12, 68, 59, 0.18);
+}
+
+/* CSS로 그린 홈 아이콘 */
+.home-icon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  display: block;
+}
+
+.home-icon::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  width: 16px;
+  height: 12px;
+  background: currentColor;
+  border-radius: 2px 2px 0 0;
+  transform: perspective(8px) rotateX(15deg);
+}
+
+.home-icon::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform: translateY(-2px);
+}
+
+/* 호버 시 아이콘 애니메이션 */
+.navbar-home:hover .home-icon {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
 }
 
 /* 네비게이션 바 반응형 */
@@ -2568,7 +2606,25 @@ input[type="file"] {
   .navbar-home {
     width: 40px;
     height: 40px;
-    font-size: 18px;
+  }
+  
+  .home-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .home-icon::before {
+    width: 14px;
+    height: 10px;
+    top: 3px;
+    left: 2px;
+  }
+  
+  .home-icon::after {
+    width: 7px;
+    height: 7px;
+    top: 7px;
+    left: 6px;
   }
 }
 
@@ -2606,7 +2662,25 @@ input[type="file"] {
   .navbar-home {
     width: 36px;
     height: 36px;
-    font-size: 16px;
+  }
+  
+  .home-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .home-icon::before {
+    width: 12px;
+    height: 8px;
+    top: 3px;
+    left: 2px;
+  }
+  
+  .home-icon::after {
+    width: 6px;
+    height: 6px;
+    top: 6px;
+    left: 5px;
   }
 }
 
