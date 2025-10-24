@@ -29,7 +29,10 @@
           <label for="searchTeam">팀명</label>
           <input type="text" id="searchTeam" placeholder="팀명을 입력하세요">
         </div>
-        <button class="action-button" onclick="searchEmployee()">검색</button>
+        <div class="search-buttons">
+          <button class="action-button" onclick="searchEmployee()">검색</button>
+          <button class="action-button secondary" onclick="clearSearch()">초기화</button>
+        </div>
       </div>
       <div id="searchResults" class="search-results"></div>
       <div id="searchStatus" class="status-message"></div>

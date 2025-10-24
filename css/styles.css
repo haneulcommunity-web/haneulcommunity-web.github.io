@@ -2631,6 +2631,19 @@ input[type="file"] {
   }
 }
 
+/* 검색 버튼 그룹 */
+.search-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.search-buttons .action-button {
+  flex: 1;
+  max-width: 120px;
+}
+
 /* 버튼 기본 스타일 */
 .btn {
   display: inline-block;
