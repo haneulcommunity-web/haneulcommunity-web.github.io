@@ -1088,14 +1088,50 @@ window.adminLoadAll = async function() {
         ...data[key]
       }));
 
-      // 생성일 기준 내림차순 정렬
+      // 정렬 옵션 적용
+      const sortBy = document.getElementById('adminSortBy')?.value || 'createdAt';
+      const sortOrder = document.getElementById('adminSortOrder')?.value || 'desc';
+      
       employees.sort((a, b) => {
-        const dateA = new Date(a.createdAt || 0);
-        const dateB = new Date(b.createdAt || 0);
-        return dateB - dateA;
+        let aVal = a[sortBy];
+        let bVal = b[sortBy];
+        
+        if (sortBy === 'createdAt') {
+          aVal = new Date(aVal || 0);
+          bVal = new Date(bVal || 0);
+        } else {
+          aVal = String(aVal || '').toLowerCase();
+          bVal = String(bVal || '').toLowerCase();
+        }
+        
+        if (sortOrder === 'asc') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
       });
 
+      // 전역 변수에 저장 (admin.html의 JavaScript에서 사용)
+      if (typeof currentData !== 'undefined') {
+        currentData = employees;
+      }
+
       displayAdminTable(employees, employees.length);
+      
+      // 선택 상태 초기화
+      if (typeof selectedItems !== 'undefined') {
+        selectedItems.clear();
+        if (typeof updateSelectedCount === 'function') {
+          updateSelectedCount();
+        }
+        if (typeof updateBulkActions === 'function') {
+          updateBulkActions();
+        }
+        if (typeof updateSelectAllCheckbox === 'function') {
+          updateSelectAllCheckbox();
+        }
+      }
+      
       status.textContent = `전체 ${employees.length}개의 데이터를 불러왔습니다.`;
       status.style.color = "#27ae60";
     } else {
@@ -1109,15 +1145,19 @@ window.adminLoadAll = async function() {
   }
 };
 
-// 관리자 검색
+// 관리자 검색 (고급 필터링 포함)
 window.adminSearch = async function() {
   const name = document.getElementById('adminSearchName').value.trim();
   const team = document.getElementById('adminSearchTeam').value.trim();
+  const dateFrom = document.getElementById('adminSearchDateFrom').value;
+  const dateTo = document.getElementById('adminSearchDateTo').value;
+  const sortBy = document.getElementById('adminSortBy')?.value || 'createdAt';
+  const sortOrder = document.getElementById('adminSortOrder')?.value || 'desc';
   const status = document.getElementById('adminStatus');
 
-  if (!name && !team) {
-    status.textContent = "이름 또는 팀명을 입력해주세요!";
-    status.style.color = "#e74c3c";
+  // 모든 필터가 비어있으면 전체 로드
+  if (!name && !team && !dateFrom && !dateTo) {
+    adminLoadAll();
     return;
   }
 
@@ -1136,21 +1176,69 @@ window.adminSearch = async function() {
 
       const totalCount = employees.length;
 
-      // 필터링
+      // 고급 필터링
       employees = employees.filter(emp => {
-        const nameMatch = !name || emp.name.includes(name);
-        const teamMatch = !team || emp.team.includes(team);
-        return nameMatch && teamMatch;
+        const nameMatch = !name || emp.name.toLowerCase().includes(name.toLowerCase());
+        const teamMatch = !team || emp.team.toLowerCase().includes(team.toLowerCase());
+        
+        // 날짜 필터링
+        let dateMatch = true;
+        if (dateFrom || dateTo) {
+          const empDate = new Date(emp.createdAt || 0);
+          if (dateFrom) {
+            const fromDate = new Date(dateFrom);
+            dateMatch = dateMatch && empDate >= fromDate;
+          }
+          if (dateTo) {
+            const toDate = new Date(dateTo);
+            toDate.setHours(23, 59, 59, 999); // 하루 끝까지
+            dateMatch = dateMatch && empDate <= toDate;
+          }
+        }
+        
+        return nameMatch && teamMatch && dateMatch;
       });
 
-      // 생성일 기준 내림차순 정렬
+      // 정렬 적용
       employees.sort((a, b) => {
-        const dateA = new Date(a.createdAt || 0);
-        const dateB = new Date(b.createdAt || 0);
-        return dateB - dateA;
+        let aVal = a[sortBy];
+        let bVal = b[sortBy];
+        
+        if (sortBy === 'createdAt') {
+          aVal = new Date(aVal || 0);
+          bVal = new Date(bVal || 0);
+        } else {
+          aVal = String(aVal || '').toLowerCase();
+          bVal = String(bVal || '').toLowerCase();
+        }
+        
+        if (sortOrder === 'asc') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
       });
+
+      // 전역 변수에 저장
+      if (typeof currentData !== 'undefined') {
+        currentData = employees;
+      }
 
       displayAdminTable(employees, totalCount);
+      
+      // 선택 상태 초기화
+      if (typeof selectedItems !== 'undefined') {
+        selectedItems.clear();
+        if (typeof updateSelectedCount === 'function') {
+          updateSelectedCount();
+        }
+        if (typeof updateBulkActions === 'function') {
+          updateBulkActions();
+        }
+        if (typeof updateSelectAllCheckbox === 'function') {
+          updateSelectAllCheckbox();
+        }
+      }
       
       if (employees.length > 0) {
         status.textContent = `${employees.length}개의 데이터를 찾았습니다!`;
@@ -1180,13 +1268,23 @@ function displayAdminTable(employees, totalCount) {
   document.getElementById('filteredCount').textContent = employees.length;
 
   if (employees.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#999;">데이터가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">데이터가 없습니다.</td></tr>';
     return;
   }
 
   employees.forEach(employee => {
     const tr = document.createElement('tr');
     tr.dataset.employeeId = employee.id;
+
+    // 체크박스
+    const checkboxTd = document.createElement('td');
+    checkboxTd.className = 'checkbox-column';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.dataset.id = employee.id;
+    checkbox.onchange = () => toggleItemSelection(checkbox);
+    checkboxTd.appendChild(checkbox);
+    tr.appendChild(checkboxTd);
 
     // 아바타
     const avatarTd = document.createElement('td');
@@ -1666,8 +1764,10 @@ window.adminLoadAllComments = async function() {
         const comments = commentsSnapshot.val();
         for (const commentId in comments) {
           allComments.push({
+            id: commentId,
             commentId: commentId,
             employeeId: employeeId,
+            avatarName: employee.name,
             employeeName: employee.name,
             employeeTeam: employee.team,
             ...comments[commentId]
@@ -1676,10 +1776,50 @@ window.adminLoadAllComments = async function() {
       }
     }
     
-    // 최신순 정렬
-    allComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    // 정렬 옵션 적용
+    const sortBy = document.getElementById('commentSortBy')?.value || 'createdAt';
+    const sortOrder = document.getElementById('commentSortOrder')?.value || 'desc';
+    
+    allComments.sort((a, b) => {
+      let aVal = a[sortBy];
+      let bVal = b[sortBy];
+      
+      if (sortBy === 'createdAt') {
+        aVal = new Date(aVal || 0);
+        bVal = new Date(bVal || 0);
+      } else {
+        aVal = String(aVal || '').toLowerCase();
+        bVal = String(bVal || '').toLowerCase();
+      }
+      
+      if (sortOrder === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+
+    // 전역 변수에 저장
+    if (typeof currentComments !== 'undefined') {
+      currentComments = allComments;
+    }
     
     displayAdminComments(allComments, allComments.length);
+    
+    // 선택 상태 초기화
+    if (typeof selectedComments !== 'undefined') {
+      selectedComments.clear();
+      if (typeof updateSelectedCommentCount === 'function') {
+        updateSelectedCommentCount();
+      }
+      if (typeof updateCommentBulkActions === 'function') {
+        updateCommentBulkActions();
+      }
+      if (typeof updateSelectAllCommentCheckbox === 'function') {
+        updateSelectAllCommentCheckbox();
+      }
+    }
+    
     status.textContent = `전체 ${allComments.length}개의 댓글을 불러왔습니다.`;
     status.style.color = "#27ae60";
     
@@ -1779,7 +1919,7 @@ function displayAdminComments(comments, totalCount) {
   document.getElementById('filteredCommentCount').textContent = comments.length;
   
   if (comments.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#999;">댓글이 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#999;">댓글이 없습니다.</td></tr>';
     return;
   }
   
@@ -1787,6 +1927,16 @@ function displayAdminComments(comments, totalCount) {
     const tr = document.createElement('tr');
     tr.dataset.commentId = comment.commentId;
     tr.dataset.employeeId = comment.employeeId;
+    
+    // 체크박스
+    const checkboxTd = document.createElement('td');
+    checkboxTd.className = 'checkbox-column';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.dataset.id = comment.id;
+    checkbox.onchange = () => toggleCommentSelection(checkbox);
+    checkboxTd.appendChild(checkbox);
+    tr.appendChild(checkboxTd);
     
     // 아바타 이름
     const nameTd = document.createElement('td');
@@ -1906,3 +2056,51 @@ window.addEventListener('viewsLoaded', function() {
     }
   });
 });
+
+// ============================================
+// 관리자 일괄 삭제 함수들
+// ============================================
+
+// 관리자용 직원 삭제 (일괄 삭제용)
+window.deleteEmployee = async function(employeeId) {
+  try {
+    // 직원 데이터 삭제
+    await remove(ref(db, `employees/${employeeId}`));
+    
+    // 관련 댓글도 삭제
+    await remove(ref(db, `comments/${employeeId}`));
+    
+    console.log(`Employee ${employeeId} deleted successfully`);
+  } catch (error) {
+    console.error('Delete employee failed:', error);
+    throw error;
+  }
+};
+
+// 관리자용 댓글 삭제 (일괄 삭제용) - 기존 함수와 구분
+window.deleteCommentById = async function(commentId) {
+  try {
+    // 모든 직원의 댓글에서 해당 댓글 찾기
+    const employeesSnapshot = await get(ref(db, "employees"));
+    if (employeesSnapshot.exists()) {
+      const employeesData = employeesSnapshot.val();
+      
+      for (const employeeId in employeesData) {
+        const commentsSnapshot = await get(ref(db, `comments/${employeeId}`));
+        if (commentsSnapshot.exists()) {
+          const comments = commentsSnapshot.val();
+          if (comments[commentId]) {
+            await remove(ref(db, `comments/${employeeId}/${commentId}`));
+            console.log(`Comment ${commentId} deleted successfully`);
+            return;
+          }
+        }
+      }
+    }
+    
+    throw new Error('Comment not found');
+  } catch (error) {
+    console.error('Delete comment failed:', error);
+    throw error;
+  }
+};

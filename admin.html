@@ -80,13 +80,59 @@
               <div class="stat-number" id="filteredCount">0</div>
               <div class="stat-label">검색 결과</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-number" id="selectedCount">0</div>
+              <div class="stat-label">선택됨</div>
+            </div>
           </div>
           
-          <div class="admin-search-bar">
-            <input type="text" id="adminSearchName" placeholder="이름으로 검색하기">
-            <input type="text" id="adminSearchTeam" placeholder="팀명으로 검색하기">
-            <button class="btn-primary" onclick="adminSearch()">검색</button>
-            <button class="btn-secondary" onclick="adminLoadAll()">전체 보기</button>
+          <!-- 고급 필터링 -->
+          <div class="admin-filters">
+            <div class="filter-row">
+              <div class="filter-group">
+                <label>이름</label>
+                <input type="text" id="adminSearchName" placeholder="이름으로 검색">
+              </div>
+              <div class="filter-group">
+                <label>팀명</label>
+                <input type="text" id="adminSearchTeam" placeholder="팀명으로 검색">
+              </div>
+              <div class="filter-group">
+                <label>생성일</label>
+                <input type="date" id="adminSearchDateFrom" placeholder="시작일">
+                <input type="date" id="adminSearchDateTo" placeholder="종료일">
+              </div>
+              <div class="filter-group">
+                <label>정렬</label>
+                <select id="adminSortBy">
+                  <option value="createdAt">생성일</option>
+                  <option value="name">이름</option>
+                  <option value="team">팀명</option>
+                </select>
+                <select id="adminSortOrder">
+                  <option value="desc">내림차순</option>
+                  <option value="asc">오름차순</option>
+                </select>
+              </div>
+            </div>
+            <div class="filter-actions">
+              <button class="btn-primary" onclick="adminSearch()">검색</button>
+              <button class="btn-secondary" onclick="adminLoadAll()">전체 보기</button>
+              <button class="btn-clear" onclick="clearFilters()">필터 초기화</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 일괄 작업 버튼 -->
+        <div class="bulk-actions" id="bulkActions" style="display: none;">
+          <div class="bulk-info">
+            <span id="selectedItemsCount">0개 항목 선택됨</span>
+          </div>
+          <div class="bulk-buttons">
+            <button class="btn-danger" onclick="bulkDelete()">선택 삭제</button>
+            <button class="btn-secondary" onclick="selectAll()">전체 선택</button>
+            <button class="btn-secondary" onclick="deselectAll()">선택 해제</button>
+            <button class="btn-primary" onclick="exportSelected()">선택 내보내기</button>
           </div>
         </div>
 
@@ -95,6 +141,9 @@
           <table class="admin-table">
             <thead>
               <tr>
+                <th class="checkbox-column">
+                  <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                </th>
                 <th>아바타</th>
                 <th>이름</th>
                 <th>팀명</th>
@@ -125,13 +174,59 @@
               <div class="stat-number" id="filteredCommentCount">0</div>
               <div class="stat-label">검색 결과</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-number" id="selectedCommentCount">0</div>
+              <div class="stat-label">선택됨</div>
+            </div>
           </div>
           
-          <div class="admin-search-bar">
-            <input type="text" id="commentSearchName" placeholder="아바타 이름으로 검색">
-            <input type="text" id="commentSearchAuthor" placeholder="댓글 작성자로 검색">
-            <button class="btn-primary" onclick="adminSearchComments()">검색</button>
-            <button class="btn-secondary" onclick="adminLoadAllComments()">전체 보기</button>
+          <!-- 댓글 필터링 -->
+          <div class="admin-filters">
+            <div class="filter-row">
+              <div class="filter-group">
+                <label>아바타 이름</label>
+                <input type="text" id="commentSearchName" placeholder="아바타 이름으로 검색">
+              </div>
+              <div class="filter-group">
+                <label>작성자</label>
+                <input type="text" id="commentSearchAuthor" placeholder="댓글 작성자로 검색">
+              </div>
+              <div class="filter-group">
+                <label>작성일</label>
+                <input type="date" id="commentSearchDateFrom" placeholder="시작일">
+                <input type="date" id="commentSearchDateTo" placeholder="종료일">
+              </div>
+              <div class="filter-group">
+                <label>정렬</label>
+                <select id="commentSortBy">
+                  <option value="createdAt">작성일</option>
+                  <option value="author">작성자</option>
+                  <option value="avatarName">아바타 이름</option>
+                </select>
+                <select id="commentSortOrder">
+                  <option value="desc">내림차순</option>
+                  <option value="asc">오름차순</option>
+                </select>
+              </div>
+            </div>
+            <div class="filter-actions">
+              <button class="btn-primary" onclick="adminSearchComments()">검색</button>
+              <button class="btn-secondary" onclick="adminLoadAllComments()">전체 보기</button>
+              <button class="btn-clear" onclick="clearCommentFilters()">필터 초기화</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 댓글 일괄 작업 버튼 -->
+        <div class="bulk-actions" id="commentBulkActions" style="display: none;">
+          <div class="bulk-info">
+            <span id="selectedCommentItemsCount">0개 댓글 선택됨</span>
+          </div>
+          <div class="bulk-buttons">
+            <button class="btn-danger" onclick="bulkDeleteComments()">선택 삭제</button>
+            <button class="btn-secondary" onclick="selectAllComments()">전체 선택</button>
+            <button class="btn-secondary" onclick="deselectAllComments()">선택 해제</button>
+            <button class="btn-primary" onclick="exportSelectedComments()">선택 내보내기</button>
           </div>
         </div>
 
@@ -140,6 +235,9 @@
           <table class="admin-table">
             <thead>
               <tr>
+                <th class="checkbox-column">
+                  <input type="checkbox" id="selectAllCommentCheckbox" onchange="toggleSelectAllComments()">
+                </th>
                 <th>아바타</th>
                 <th>작성자</th>
                 <th>메시지</th>
@@ -203,6 +301,12 @@
 
   <!-- 관리자 페이지 초기화 -->
   <script>
+    // 전역 변수
+    let selectedItems = new Set();
+    let selectedComments = new Set();
+    let currentData = [];
+    let currentComments = [];
+
     // 페이지 로드 시 관리자 기능 초기화
     window.addEventListener('load', function() {
       // app.js가 로드될 때까지 대기
@@ -215,6 +319,343 @@
         }
       }, 100);
     });
+
+    // ===== 아바타 관리 기능 =====
+    
+    // 전체 선택/해제
+    function toggleSelectAll() {
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+      const checkboxes = document.querySelectorAll('#adminTableBody input[type="checkbox"]');
+      
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+        const row = checkbox.closest('tr');
+        if (selectAllCheckbox.checked) {
+          selectedItems.add(checkbox.dataset.id);
+          row.classList.add('selected');
+        } else {
+          selectedItems.delete(checkbox.dataset.id);
+          row.classList.remove('selected');
+        }
+      });
+      
+      updateSelectedCount();
+      updateBulkActions();
+    }
+
+    // 개별 선택
+    function toggleItemSelection(checkbox) {
+      const row = checkbox.closest('tr');
+      if (checkbox.checked) {
+        selectedItems.add(checkbox.dataset.id);
+        row.classList.add('selected');
+      } else {
+        selectedItems.delete(checkbox.dataset.id);
+        row.classList.remove('selected');
+      }
+      
+      updateSelectAllCheckbox();
+      updateSelectedCount();
+      updateBulkActions();
+    }
+
+    // 전체 선택 체크박스 업데이트
+    function updateSelectAllCheckbox() {
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+      const checkboxes = document.querySelectorAll('#adminTableBody input[type="checkbox"]');
+      const checkedCount = document.querySelectorAll('#adminTableBody input[type="checkbox"]:checked').length;
+      
+      selectAllCheckbox.checked = checkedCount === checkboxes.length && checkboxes.length > 0;
+      selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+    }
+
+    // 선택된 항목 수 업데이트
+    function updateSelectedCount() {
+      document.getElementById('selectedCount').textContent = selectedItems.size;
+    }
+
+    // 일괄 작업 버튼 표시/숨김
+    function updateBulkActions() {
+      const bulkActions = document.getElementById('bulkActions');
+      if (selectedItems.size > 0) {
+        bulkActions.style.display = 'flex';
+        document.getElementById('selectedItemsCount').textContent = `${selectedItems.size}개 항목 선택됨`;
+      } else {
+        bulkActions.style.display = 'none';
+      }
+    }
+
+    // 전체 선택
+    function selectAll() {
+      const checkboxes = document.querySelectorAll('#adminTableBody input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+        selectedItems.add(checkbox.dataset.id);
+        checkbox.closest('tr').classList.add('selected');
+      });
+      updateSelectAllCheckbox();
+      updateSelectedCount();
+      updateBulkActions();
+    }
+
+    // 선택 해제
+    function deselectAll() {
+      const checkboxes = document.querySelectorAll('#adminTableBody input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+        selectedItems.delete(checkbox.dataset.id);
+        checkbox.closest('tr').classList.remove('selected');
+      });
+      updateSelectAllCheckbox();
+      updateSelectedCount();
+      updateBulkActions();
+    }
+
+    // 일괄 삭제
+    function bulkDelete() {
+      if (selectedItems.size === 0) {
+        alert('삭제할 항목을 선택해주세요.');
+        return;
+      }
+
+      if (confirm(`선택된 ${selectedItems.size}개 항목을 삭제하시겠습니까?`)) {
+        // Firebase에서 선택된 항목들 삭제
+        selectedItems.forEach(id => {
+          if (typeof deleteEmployee === 'function') {
+            deleteEmployee(id);
+          }
+        });
+        
+        selectedItems.clear();
+        updateSelectedCount();
+        updateBulkActions();
+        updateSelectAllCheckbox();
+        
+        // 데이터 새로고침
+        if (typeof adminLoadAll === 'function') {
+          adminLoadAll();
+        }
+        
+        alert('선택된 항목들이 삭제되었습니다.');
+      }
+    }
+
+    // 선택된 항목 내보내기
+    function exportSelected() {
+      if (selectedItems.size === 0) {
+        alert('내보낼 항목을 선택해주세요.');
+        return;
+      }
+
+      const selectedData = currentData.filter(item => selectedItems.has(item.id));
+      const csvContent = convertToCSV(selectedData);
+      downloadCSV(csvContent, 'selected_avatars.csv');
+    }
+
+    // 필터 초기화
+    function clearFilters() {
+      document.getElementById('adminSearchName').value = '';
+      document.getElementById('adminSearchTeam').value = '';
+      document.getElementById('adminSearchDateFrom').value = '';
+      document.getElementById('adminSearchDateTo').value = '';
+      document.getElementById('adminSortBy').value = 'createdAt';
+      document.getElementById('adminSortOrder').value = 'desc';
+      
+      if (typeof adminLoadAll === 'function') {
+        adminLoadAll();
+      }
+    }
+
+    // ===== 댓글 관리 기능 =====
+    
+    // 댓글 전체 선택/해제
+    function toggleSelectAllComments() {
+      const selectAllCheckbox = document.getElementById('selectAllCommentCheckbox');
+      const checkboxes = document.querySelectorAll('#adminCommentTableBody input[type="checkbox"]');
+      
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+        const row = checkbox.closest('tr');
+        if (selectAllCheckbox.checked) {
+          selectedComments.add(checkbox.dataset.id);
+          row.classList.add('selected');
+        } else {
+          selectedComments.delete(checkbox.dataset.id);
+          row.classList.remove('selected');
+        }
+      });
+      
+      updateSelectedCommentCount();
+      updateCommentBulkActions();
+    }
+
+    // 댓글 개별 선택
+    function toggleCommentSelection(checkbox) {
+      const row = checkbox.closest('tr');
+      if (checkbox.checked) {
+        selectedComments.add(checkbox.dataset.id);
+        row.classList.add('selected');
+      } else {
+        selectedComments.delete(checkbox.dataset.id);
+        row.classList.remove('selected');
+      }
+      
+      updateSelectAllCommentCheckbox();
+      updateSelectedCommentCount();
+      updateCommentBulkActions();
+    }
+
+    // 댓글 전체 선택 체크박스 업데이트
+    function updateSelectAllCommentCheckbox() {
+      const selectAllCheckbox = document.getElementById('selectAllCommentCheckbox');
+      const checkboxes = document.querySelectorAll('#adminCommentTableBody input[type="checkbox"]');
+      const checkedCount = document.querySelectorAll('#adminCommentTableBody input[type="checkbox"]:checked').length;
+      
+      selectAllCheckbox.checked = checkedCount === checkboxes.length && checkboxes.length > 0;
+      selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+    }
+
+    // 선택된 댓글 수 업데이트
+    function updateSelectedCommentCount() {
+      document.getElementById('selectedCommentCount').textContent = selectedComments.size;
+    }
+
+    // 댓글 일괄 작업 버튼 표시/숨김
+    function updateCommentBulkActions() {
+      const bulkActions = document.getElementById('commentBulkActions');
+      if (selectedComments.size > 0) {
+        bulkActions.style.display = 'flex';
+        document.getElementById('selectedCommentItemsCount').textContent = `${selectedComments.size}개 댓글 선택됨`;
+      } else {
+        bulkActions.style.display = 'none';
+      }
+    }
+
+    // 댓글 전체 선택
+    function selectAllComments() {
+      const checkboxes = document.querySelectorAll('#adminCommentTableBody input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+        selectedComments.add(checkbox.dataset.id);
+        checkbox.closest('tr').classList.add('selected');
+      });
+      updateSelectAllCommentCheckbox();
+      updateSelectedCommentCount();
+      updateCommentBulkActions();
+    }
+
+    // 댓글 선택 해제
+    function deselectAllComments() {
+      const checkboxes = document.querySelectorAll('#adminCommentTableBody input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+        selectedComments.delete(checkbox.dataset.id);
+        checkbox.closest('tr').classList.remove('selected');
+      });
+      updateSelectAllCommentCheckbox();
+      updateSelectedCommentCount();
+      updateCommentBulkActions();
+    }
+
+    // 댓글 일괄 삭제
+    function bulkDeleteComments() {
+      if (selectedComments.size === 0) {
+        alert('삭제할 댓글을 선택해주세요.');
+        return;
+      }
+
+      if (confirm(`선택된 ${selectedComments.size}개 댓글을 삭제하시겠습니까?`)) {
+        // Firebase에서 선택된 댓글들 삭제
+        selectedComments.forEach(id => {
+          if (typeof deleteCommentById === 'function') {
+            deleteCommentById(id);
+          }
+        });
+        
+        selectedComments.clear();
+        updateSelectedCommentCount();
+        updateCommentBulkActions();
+        updateSelectAllCommentCheckbox();
+        
+        // 데이터 새로고침
+        if (typeof adminLoadAllComments === 'function') {
+          adminLoadAllComments();
+        }
+        
+        alert('선택된 댓글들이 삭제되었습니다.');
+      }
+    }
+
+    // 선택된 댓글 내보내기
+    function exportSelectedComments() {
+      if (selectedComments.size === 0) {
+        alert('내보낼 댓글을 선택해주세요.');
+        return;
+      }
+
+      const selectedData = currentComments.filter(comment => selectedComments.has(comment.id));
+      const csvContent = convertCommentsToCSV(selectedData);
+      downloadCSV(csvContent, 'selected_comments.csv');
+    }
+
+    // 댓글 필터 초기화
+    function clearCommentFilters() {
+      document.getElementById('commentSearchName').value = '';
+      document.getElementById('commentSearchAuthor').value = '';
+      document.getElementById('commentSearchDateFrom').value = '';
+      document.getElementById('commentSearchDateTo').value = '';
+      document.getElementById('commentSortBy').value = 'createdAt';
+      document.getElementById('commentSortOrder').value = 'desc';
+      
+      if (typeof adminLoadAllComments === 'function') {
+        adminLoadAllComments();
+      }
+    }
+
+    // ===== 유틸리티 함수 =====
+    
+    // CSV 변환
+    function convertToCSV(data) {
+      const headers = ['이름', '팀명', '말씀', '생성일'];
+      const rows = data.map(item => [
+        item.name || '',
+        item.team || '',
+        item.verse || '',
+        item.createdAt ? new Date(item.createdAt).toLocaleDateString('ko-KR') : ''
+      ]);
+      
+      return [headers, ...rows].map(row => 
+        row.map(field => `"${field}"`).join(',')
+      ).join('\n');
+    }
+
+    // 댓글 CSV 변환
+    function convertCommentsToCSV(data) {
+      const headers = ['아바타 이름', '작성자', '메시지', '작성일'];
+      const rows = data.map(comment => [
+        comment.avatarName || '',
+        comment.author || '',
+        comment.message || '',
+        comment.createdAt ? new Date(comment.createdAt).toLocaleDateString('ko-KR') : ''
+      ]);
+      
+      return [headers, ...rows].map(row => 
+        row.map(field => `"${field}"`).join(',')
+      ).join('\n');
+    }
+
+    // CSV 다운로드
+    function downloadCSV(csvContent, filename) {
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   </script>
 </body>
 </html>
