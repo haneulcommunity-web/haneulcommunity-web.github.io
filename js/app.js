@@ -139,6 +139,14 @@ window.showPage = function(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   targetPage.classList.add('active');
   
+  // URL 해시 업데이트 (페이지 ID에서 'Page' 제거)
+  const pageName = pageId.replace('Page', '');
+  if (pageName !== 'main') {
+    window.location.hash = pageName;
+  } else {
+    window.location.hash = '';
+  }
+  
   // 아바타 페이지가 활성화될 때 아바타 빌더 초기화
   if (pageId === 'avatarPage') {
     setTimeout(() => {
@@ -1784,7 +1792,26 @@ window.adminDeleteComment = async function(employeeId, commentId) {
 };
 
 // 페이지 로드 시 초기화
-// 모든 뷰가 로드된 후에 메인 페이지 표시
+// 모든 뷰가 로드된 후에 현재 URL에 따라 적절한 페이지 표시
 window.addEventListener('viewsLoaded', function() {
-  showPage('mainPage');
+  // URL 해시에 따라 페이지 결정
+  const hash = window.location.hash.substring(1);
+  if (hash && document.getElementById(hash + 'Page')) {
+    showPage(hash + 'Page');
+  } else {
+    showPage('mainPage');
+  }
+  
+  // 브라우저 뒤로가기/앞으로가기 처리
+  window.addEventListener('popstate', function(event) {
+    const hash = window.location.hash.substring(1);
+    if (hash && document.getElementById(hash + 'Page')) {
+      // URL 해시만 업데이트하고 페이지 전환은 하지 않음 (무한 루프 방지)
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(hash + 'Page').classList.add('active');
+    } else {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('mainPage').classList.add('active');
+    }
+  });
 });
