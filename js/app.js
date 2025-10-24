@@ -662,9 +662,46 @@ window.deleteEmployee = async function(employeeId) {
   }
 
   try {
+    // Firebase에서 삭제
     await remove(ref(db, `employees/${employeeId}`));
-    alert('데이터가 삭제되었습니다.');
-    showPage('searchPage');
+    
+    // 화면에서 해당 카드 찾기
+    const resultsContainer = document.getElementById('searchResults');
+    const cards = resultsContainer.querySelectorAll('.employee-card');
+    
+    // 삭제할 카드 찾기
+    let cardToRemove = null;
+    cards.forEach(card => {
+      const deleteButton = card.querySelector(`button[onclick*="deleteEmployee('${employeeId}')"]`);
+      if (deleteButton) {
+        cardToRemove = card;
+      }
+    });
+    
+    if (cardToRemove) {
+      // 페이드아웃 애니메이션 추가
+      cardToRemove.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      cardToRemove.style.opacity = '0';
+      cardToRemove.style.transform = 'scale(0.9)';
+      
+      // 애니메이션 후 DOM에서 제거
+      setTimeout(() => {
+        cardToRemove.remove();
+        
+        // 남은 카드 수 확인
+        const remainingCards = resultsContainer.querySelectorAll('.employee-card').length;
+        
+        // 검색 상태 업데이트
+        const status = document.getElementById('searchStatus');
+        if (remainingCards === 0) {
+          status.textContent = "데이터가 삭제되었습니다.";
+          status.style.color = "#27ae60";
+        } else {
+          status.textContent = `삭제 완료! (${remainingCards}명 남음)`;
+          status.style.color = "#27ae60";
+        }
+      }, 300);
+    }
   } catch (error) {
     alert('삭제 실패: ' + error.message);
   }
