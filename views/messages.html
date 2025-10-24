@@ -1,16 +1,17 @@
 <!-- 메시지(댓글) 페이지 -->
 <div id="messagesPage" class="page">
-  <!-- 통일된 네비게이션 바 -->
-  <div class="page-navbar">
-    <button class="navbar-back" onclick="showPage('searchPage')">
-      <span class="back-arrow">←</span>
-      <span class="back-text">뒤로</span>
-    </button>
-    <h2 class="navbar-title" id="messagesTitle">응원 메시지</h2>
-    <div class="navbar-spacer"></div>
-  </div>
-  
-  <div class="messages-container">
+  <div class="avatar-fullscreen-container">
+    <!-- 통일된 네비게이션 바 -->
+    <div class="page-navbar">
+      <button class="navbar-back" onclick="showPage('searchPage')">
+        <span class="back-arrow">←</span>
+        <span class="back-text">뒤로</span>
+      </button>
+      <h2 class="navbar-title" id="messagesTitle">응원 메시지</h2>
+      <div class="navbar-spacer"></div>
+    </div>
+    
+    <div class="messages-container">
 
     <!-- 아바타 정보 -->
     <div class="messages-profile">
@@ -34,6 +35,7 @@
     <!-- 댓글 목록 -->
     <div class="comments-list" id="messagesCommentsList">
       <!-- 댓글이 동적으로 추가됩니다 -->
+    </div>
     </div>
   </div>
 </div>

@@ -1,16 +1,17 @@
 <!-- 결과 페이지 -->
 <div id="resultPage" class="page">
-  <!-- 통일된 네비게이션 바 -->
-  <div class="page-navbar">
-    <button class="navbar-back" onclick="showPage('searchPage')">
-      <span class="back-arrow">←</span>
-      <span class="back-text">뒤로</span>
-    </button>
-    <h2 class="navbar-title">상세보기</h2>
-    <div class="navbar-spacer"></div>
-  </div>
-  
-  <div class="result-container">
+  <div class="avatar-fullscreen-container">
+    <!-- 통일된 네비게이션 바 -->
+    <div class="page-navbar">
+      <button class="navbar-back" onclick="showPage('searchPage')">
+        <span class="back-arrow">←</span>
+        <span class="back-text">뒤로</span>
+      </button>
+      <h2 class="navbar-title">상세보기</h2>
+      <div class="navbar-spacer"></div>
+    </div>
+    
+    <div class="result-container">
     <div id="resultCard">
       <!-- LINE 카드가 여기에 동적으로 생성됩니다 -->
     </div>
@@ -20,6 +21,7 @@
     <div class="button-container">
       <button class="result-button" onclick="saveAsImage()">이미지로 저장</button>
       <button class="result-button" onclick="showPage('searchPage')">다시 검색</button>
+    </div>
     </div>
   </div>
 </div>
