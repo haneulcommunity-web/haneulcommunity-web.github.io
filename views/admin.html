@@ -2,8 +2,8 @@
 <div id="adminPage" class="page">
   <div class="admin-container">
     <div class="admin-header">
-      <h1>🔐 관리자 페이지</h1>
-      <button class="btn-back" onclick="showPage('mainPage')">← 메인으로</button>
+      <h1>✨ 관리자 대시보드</h1>
+      <button class="btn-back" onclick="showPage('mainPage')">← 돌아가기</button>
     </div>
 
     <!-- 검색 및 통계 -->
@@ -11,19 +11,19 @@
       <div class="admin-stats">
         <div class="stat-card">
           <div class="stat-number" id="totalCount">0</div>
-          <div class="stat-label">전체 데이터</div>
+          <div class="stat-label">💾 전체 데이터</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="filteredCount">0</div>
-          <div class="stat-label">검색 결과</div>
+          <div class="stat-label">🔍 검색 결과</div>
         </div>
       </div>
       
       <div class="admin-search-bar">
-        <input type="text" id="adminSearchName" placeholder="이름으로 검색">
-        <input type="text" id="adminSearchTeam" placeholder="팀명으로 검색">
+        <input type="text" id="adminSearchName" placeholder="✏️ 이름으로 검색하기">
+        <input type="text" id="adminSearchTeam" placeholder="👥 팀명으로 검색하기">
         <button class="btn-primary" onclick="adminSearch()">🔍 검색</button>
-        <button class="btn-secondary" onclick="adminLoadAll()">전체 보기</button>
+        <button class="btn-secondary" onclick="adminLoadAll()">📋 전체 보기</button>
       </div>
     </div>
 
@@ -32,12 +32,12 @@
       <table class="admin-table">
         <thead>
           <tr>
-            <th>아바타</th>
-            <th>이름</th>
-            <th>팀명</th>
-            <th>말씀</th>
-            <th>생성일</th>
-            <th>관리</th>
+            <th>👤 아바타</th>
+            <th>📝 이름</th>
+            <th>🏢 팀명</th>
+            <th>💬 말씀</th>
+            <th>📅 생성일</th>
+            <th>⚙️ 관리</th>
           </tr>
         </thead>
         <tbody id="adminTableBody">
