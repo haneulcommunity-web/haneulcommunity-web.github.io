@@ -25,7 +25,6 @@ const VIEW_LOADER = {
       'search',
       'result',
       'messages',
-      'admin',
       'edit-modal'
     ];
 

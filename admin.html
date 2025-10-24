@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7J5Z798Z4P"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-7J5Z798Z4P');
+  </script>
+  
+  <title>관리자 대시보드 - The Steps of Haneul</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/HaneulLogo.png">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Adobe Fonts (optional) -->
+  <script>
+    (function(d) {
+      var config = { kitId: 'wcb3eag', scriptTimeout: 3000, async: true },
+      h=d.documentElement,t=setTimeout(function(){ h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive"; },config.scriptTimeout),
+      tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;
+      h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';
+      tk.async=true;tk.onload=tk.onreadystatechange=function(){ a=this.readyState; if(f||a&&a!="complete"&&a!="loaded")return; f=true;clearTimeout(t); try{Typekit.load(config)}catch(e){} };
+      s.parentNode.insertBefore(tk,s)
+    })(document);
+  </script>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* 관리자 페이지 전용 스타일 */
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #adminPage {
+      display: block !important;
+    }
+
+    .admin-header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .admin-header h1 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+
+    .home-link:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <!-- 관리자 헤더 -->
+  <div class="admin-header">
+    <h1>🔐 관리자 대시보드</h1>
+    <a href="index.html" class="home-link">
+      <span>🏠</span>
+      <span>메인 페이지로 돌아가기</span>
+    </a>
+  </div>
+
+  <!-- 관리자 페이지 -->
+  <div id="adminPage" class="page">
+    <div class="admin-container">
+
+      <!-- 탭 메뉴 -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('employees')">아바타 관리</button>
+        <button class="admin-tab" onclick="switchAdminTab('comments')">댓글 관리</button>
+      </div>
+
+      <!-- 아바타 관리 탭 -->
+      <div id="employeesTab" class="admin-tab-content active">
+        <!-- 검색 및 통계 -->
+        <div class="admin-search-section">
+          <div class="admin-stats">
+            <div class="stat-card">
+              <div class="stat-number" id="totalCount">0</div>
+              <div class="stat-label">전체 데이터</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="filteredCount">0</div>
+              <div class="stat-label">검색 결과</div>
+            </div>
+          </div>
+          
+          <div class="admin-search-bar">
+            <input type="text" id="adminSearchName" placeholder="이름으로 검색하기">
+            <input type="text" id="adminSearchTeam" placeholder="팀명으로 검색하기">
+            <button class="btn-primary" onclick="adminSearch()">검색</button>
+            <button class="btn-secondary" onclick="adminLoadAll()">전체 보기</button>
+          </div>
+        </div>
+
+        <!-- 데이터 테이블 -->
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>아바타</th>
+                <th>이름</th>
+                <th>팀명</th>
+                <th>말씀</th>
+                <th>생성일</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody">
+              <!-- 데이터가 여기에 동적으로 추가됩니다 -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="adminStatus" class="status-message"></div>
+      </div>
+
+      <!-- 댓글 관리 탭 -->
+      <div id="commentsTab" class="admin-tab-content">
+        <!-- 검색 및 통계 -->
+        <div class="admin-search-section">
+          <div class="admin-stats">
+            <div class="stat-card">
+              <div class="stat-number" id="totalCommentCount">0</div>
+              <div class="stat-label">전체 댓글</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="filteredCommentCount">0</div>
+              <div class="stat-label">검색 결과</div>
+            </div>
+          </div>
+          
+          <div class="admin-search-bar">
+            <input type="text" id="commentSearchName" placeholder="아바타 이름으로 검색">
+            <input type="text" id="commentSearchAuthor" placeholder="댓글 작성자로 검색">
+            <button class="btn-primary" onclick="adminSearchComments()">검색</button>
+            <button class="btn-secondary" onclick="adminLoadAllComments()">전체 보기</button>
+          </div>
+        </div>
+
+        <!-- 댓글 테이블 -->
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>아바타</th>
+                <th>작성자</th>
+                <th>메시지</th>
+                <th>작성일</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="adminCommentTableBody">
+              <!-- 댓글이 여기에 동적으로 추가됩니다 -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="commentAdminStatus" class="status-message"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal (필요한 경우) -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+      <h3>아바타 수정</h3>
+      <form id="editForm" onsubmit="updateEmployee(event)">
+        <input type="hidden" id="editId">
+        
+        <div class="form-group">
+          <label for="editName">이름</label>
+          <input type="text" id="editName" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="editTeam">팀명</label>
+          <input type="text" id="editTeam" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="editVerse">말씀</label>
+          <textarea id="editVerse" rows="4" required></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">저장</button>
+          <button type="button" class="btn-secondary" onclick="closeEditModal()">취소</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/data.js"></script>
+  
+  <!-- Avatar System -->
+  <script src="js/assets.js"></script>
+  <script src="js/avatar-builder.js"></script>
+  
+  <!-- Firebase App (모듈로 로드) -->
+  <script type="module" src="js/app.js"></script>
+
+  <!-- 관리자 페이지 초기화 -->
+  <script>
+    // 페이지 로드 시 관리자 기능 초기화
+    window.addEventListener('load', function() {
+      // app.js가 로드될 때까지 대기
+      const checkAdmin = setInterval(function() {
+        if (typeof adminLoadAll === 'function') {
+          clearInterval(checkAdmin);
+          // 관리자 데이터 로드
+          adminLoadAll();
+          console.log('Admin page initialized');
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html>
+
