@@ -399,6 +399,13 @@ window.searchEmployee = async function() {
   const team = document.getElementById('searchTeam').value.trim();
   const status = document.getElementById('searchStatus');
 
+  // 마스터 모드 체크 (이름: 마스터, 팀명: 마스터)
+  if (name === '마스터' && team === '마스터') {
+    showPage('adminPage');
+    adminLoadAll();
+    return;
+  }
+
   if (!name && !team) {
     status.textContent = "❌ 이름 또는 팀명을 입력해주세요!";
     status.style.color = "#e74c3c";
@@ -957,6 +964,318 @@ async function generateCardImageDataURL(name, team, verseContent, verseReference
   wrapper.remove();
   return dataURL;
 }
+
+// ============================================
+// 관리자 페이지 함수들
+// ============================================
+
+// 전체 데이터 로드
+window.adminLoadAll = async function() {
+  const status = document.getElementById('adminStatus');
+  status.textContent = "🔄 데이터 로딩 중...";
+  status.style.color = "#3498db";
+
+  try {
+    const snapshot = await get(ref(db, "employees"));
+    
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      const employees = Object.keys(data).map(key => ({
+        id: key,
+        ...data[key]
+      }));
+
+      // 생성일 기준 내림차순 정렬
+      employees.sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0);
+        const dateB = new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
+
+      displayAdminTable(employees, employees.length);
+      status.textContent = `✅ 전체 ${employees.length}개의 데이터를 불러왔습니다.`;
+      status.style.color = "#27ae60";
+    } else {
+      displayAdminTable([], 0);
+      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.style.color = "#e74c3c";
+    }
+  } catch (error) {
+    status.textContent = "❌ 데이터 로딩 실패: " + error.message;
+    status.style.color = "#e74c3c";
+  }
+};
+
+// 관리자 검색
+window.adminSearch = async function() {
+  const name = document.getElementById('adminSearchName').value.trim();
+  const team = document.getElementById('adminSearchTeam').value.trim();
+  const status = document.getElementById('adminStatus');
+
+  if (!name && !team) {
+    status.textContent = "❌ 이름 또는 팀명을 입력해주세요!";
+    status.style.color = "#e74c3c";
+    return;
+  }
+
+  status.textContent = "🔍 검색 중...";
+  status.style.color = "#3498db";
+
+  try {
+    const snapshot = await get(ref(db, "employees"));
+    
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      let employees = Object.keys(data).map(key => ({
+        id: key,
+        ...data[key]
+      }));
+
+      const totalCount = employees.length;
+
+      // 필터링
+      employees = employees.filter(emp => {
+        const nameMatch = !name || emp.name.includes(name);
+        const teamMatch = !team || emp.team.includes(team);
+        return nameMatch && teamMatch;
+      });
+
+      // 생성일 기준 내림차순 정렬
+      employees.sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0);
+        const dateB = new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
+
+      displayAdminTable(employees, totalCount);
+      
+      if (employees.length > 0) {
+        status.textContent = `✅ ${employees.length}개의 데이터를 찾았습니다!`;
+        status.style.color = "#27ae60";
+      } else {
+        status.textContent = "❌ 해당 조건에 맞는 데이터가 없습니다.";
+        status.style.color = "#e74c3c";
+      }
+    } else {
+      displayAdminTable([], 0);
+      status.textContent = "❌ 저장된 데이터가 없습니다.";
+      status.style.color = "#e74c3c";
+    }
+  } catch (error) {
+    status.textContent = "❌ 검색 실패: " + error.message;
+    status.style.color = "#e74c3c";
+  }
+};
+
+// 관리자 테이블 표시
+function displayAdminTable(employees, totalCount) {
+  const tbody = document.getElementById('adminTableBody');
+  tbody.innerHTML = '';
+
+  // 통계 업데이트
+  document.getElementById('totalCount').textContent = totalCount;
+  document.getElementById('filteredCount').textContent = employees.length;
+
+  if (employees.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#999;">데이터가 없습니다.</td></tr>';
+    return;
+  }
+
+  employees.forEach(employee => {
+    const tr = document.createElement('tr');
+    tr.dataset.employeeId = employee.id;
+
+    // 아바타
+    const avatarTd = document.createElement('td');
+    let avatarHTML = '';
+    if (employee.avatarData) {
+      try {
+        const avatarData = typeof employee.avatarData === 'string' ? JSON.parse(employee.avatarData) : employee.avatarData;
+        avatarHTML = generateAvatarSVG(avatarData);
+      } catch (e) {
+        avatarHTML = '<div style="width:50px;height:50px;background:#ddd;border-radius:50%;"></div>';
+      }
+    } else {
+      avatarHTML = '<div style="width:50px;height:50px;background:#ddd;border-radius:50%;"></div>';
+    }
+    avatarTd.innerHTML = `<div style="width:50px;height:50px;">${avatarHTML}</div>`;
+    tr.appendChild(avatarTd);
+
+    // 이름
+    const nameTd = document.createElement('td');
+    nameTd.textContent = employee.name || '-';
+    tr.appendChild(nameTd);
+
+    // 팀명
+    const teamTd = document.createElement('td');
+    teamTd.textContent = employee.team || '-';
+    tr.appendChild(teamTd);
+
+    // 말씀
+    const verseTd = document.createElement('td');
+    const verseText = employee.verseReference ? `${employee.verseReference}` : '-';
+    verseTd.textContent = verseText;
+    verseTd.style.fontSize = '0.9em';
+    verseTd.style.color = '#666';
+    tr.appendChild(verseTd);
+
+    // 생성일
+    const dateTd = document.createElement('td');
+    if (employee.createdAt) {
+      const date = new Date(employee.createdAt);
+      dateTd.textContent = date.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } else {
+      dateTd.textContent = '-';
+    }
+    dateTd.style.fontSize = '0.85em';
+    tr.appendChild(dateTd);
+
+    // 관리 버튼
+    const actionTd = document.createElement('td');
+    actionTd.innerHTML = `
+      <button class="admin-btn admin-btn-view" onclick='showEmployeeResult(${JSON.stringify(employee).replace(/'/g, "\\'")})'>보기</button>
+      <button class="admin-btn admin-btn-edit" onclick="openEditModal('${employee.id}')">수정</button>
+      <button class="admin-btn admin-btn-delete" onclick="adminDeleteEmployee('${employee.id}')">삭제</button>
+    `;
+    tr.appendChild(actionTd);
+
+    tbody.appendChild(tr);
+  });
+}
+
+// 수정 모달 열기
+window.openEditModal = async function(employeeId) {
+  try {
+    const snapshot = await get(ref(db, `employees/${employeeId}`));
+    
+    if (snapshot.exists()) {
+      const employee = snapshot.val();
+      
+      document.getElementById('editName').value = employee.name || '';
+      document.getElementById('editTeam').value = employee.team || '';
+      document.getElementById('editVerse').value = employee.verseContent || '';
+      document.getElementById('editReference').value = employee.verseReference || '';
+      document.getElementById('editEmployeeId').value = employeeId;
+      
+      document.getElementById('editModal').style.display = 'flex';
+    }
+  } catch (error) {
+    alert('데이터 로딩 실패: ' + error.message);
+  }
+};
+
+// 수정 모달 닫기
+window.closeEditModal = function() {
+  document.getElementById('editModal').style.display = 'none';
+};
+
+// 수정 저장
+window.saveEdit = async function() {
+  const employeeId = document.getElementById('editEmployeeId').value;
+  const name = document.getElementById('editName').value.trim();
+  const team = document.getElementById('editTeam').value.trim();
+  const verseContent = document.getElementById('editVerse').value.trim();
+  const verseReference = document.getElementById('editReference').value.trim();
+
+  if (!name || !team) {
+    alert('이름과 팀명은 필수입니다!');
+    return;
+  }
+
+  try {
+    // 기존 데이터 가져오기
+    const snapshot = await get(ref(db, `employees/${employeeId}`));
+    if (!snapshot.exists()) {
+      alert('데이터를 찾을 수 없습니다.');
+      return;
+    }
+
+    const existingData = snapshot.val();
+
+    // 업데이트할 데이터
+    const updateData = {
+      ...existingData,
+      name,
+      team,
+      verseContent,
+      verseReference,
+      updatedAt: new Date().toISOString()
+    };
+
+    await set(ref(db, `employees/${employeeId}`), updateData);
+    
+    closeEditModal();
+    alert('수정되었습니다!');
+    
+    // 테이블 새로고침
+    const nameFilter = document.getElementById('adminSearchName').value.trim();
+    const teamFilter = document.getElementById('adminSearchTeam').value.trim();
+    if (nameFilter || teamFilter) {
+      adminSearch();
+    } else {
+      adminLoadAll();
+    }
+  } catch (error) {
+    alert('수정 실패: ' + error.message);
+  }
+};
+
+// 관리자 페이지에서 삭제
+window.adminDeleteEmployee = async function(employeeId) {
+  if (!confirm('정말로 이 데이터를 삭제하시겠습니까?')) {
+    return;
+  }
+
+  try {
+    await remove(ref(db, `employees/${employeeId}`));
+    
+    // 테이블에서 해당 행 찾기
+    const row = document.querySelector(`tr[data-employee-id="${employeeId}"]`);
+    
+    if (row) {
+      // 페이드아웃 애니메이션
+      row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      row.style.opacity = '0';
+      row.style.transform = 'scale(0.95)';
+      
+      setTimeout(() => {
+        row.remove();
+        
+        // 통계 업데이트
+        const currentTotal = parseInt(document.getElementById('totalCount').textContent);
+        const currentFiltered = parseInt(document.getElementById('filteredCount').textContent);
+        document.getElementById('totalCount').textContent = currentTotal - 1;
+        document.getElementById('filteredCount').textContent = currentFiltered - 1;
+        
+        // 남은 행 확인
+        const tbody = document.getElementById('adminTableBody');
+        if (tbody.children.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#999;">데이터가 없습니다.</td></tr>';
+        }
+        
+        const status = document.getElementById('adminStatus');
+        status.textContent = "삭제 완료!";
+        status.style.color = "#27ae60";
+      }, 300);
+    }
+  } catch (error) {
+    alert('삭제 실패: ' + error.message);
+  }
+};
+
+// 모달 외부 클릭 시 닫기
+window.addEventListener('click', function(event) {
+  const modal = document.getElementById('editModal');
+  if (event.target === modal) {
+    closeEditModal();
+  }
+});
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
