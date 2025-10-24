@@ -2149,12 +2149,7 @@ window.addEventListener('viewsLoaded', function() {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(hash + 'Page').classList.add('active');
       
-      // 검색 페이지인 경우 검색 결과 복원
-      if (hash === 'search' && typeof window.restoreSearchResults === 'function') {
-        setTimeout(() => {
-          window.restoreSearchResults();
-        }, 100);
-      }
+      // 검색 페이지인 경우는 showPage 함수에서 처리하므로 여기서는 복원하지 않음
     } else {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('mainPage').classList.add('active');
