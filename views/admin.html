@@ -1,0 +1,52 @@
+<!-- 관리자 페이지 -->
+<div id="adminPage" class="page">
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>🔐 관리자 페이지</h1>
+      <button class="btn-back" onclick="showPage('mainPage')">← 메인으로</button>
+    </div>
+
+    <!-- 검색 및 통계 -->
+    <div class="admin-search-section">
+      <div class="admin-stats">
+        <div class="stat-card">
+          <div class="stat-number" id="totalCount">0</div>
+          <div class="stat-label">전체 데이터</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="filteredCount">0</div>
+          <div class="stat-label">검색 결과</div>
+        </div>
+      </div>
+      
+      <div class="admin-search-bar">
+        <input type="text" id="adminSearchName" placeholder="이름으로 검색">
+        <input type="text" id="adminSearchTeam" placeholder="팀명으로 검색">
+        <button class="btn-primary" onclick="adminSearch()">🔍 검색</button>
+        <button class="btn-secondary" onclick="adminLoadAll()">전체 보기</button>
+      </div>
+    </div>
+
+    <!-- 데이터 테이블 -->
+    <div class="admin-table-container">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>아바타</th>
+            <th>이름</th>
+            <th>팀명</th>
+            <th>말씀</th>
+            <th>생성일</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody">
+          <!-- 데이터가 여기에 동적으로 추가됩니다 -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="adminStatus" class="status-message"></div>
+  </div>
+</div>
+

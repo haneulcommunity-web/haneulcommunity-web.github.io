@@ -1,0 +1,25 @@
+<!-- 조회 페이지 -->
+<div id="searchPage" class="page">
+  <div class="search-container">
+    <div class="search-card">
+      <h2>조회</h2>
+      <div class="search-form">
+        <div class="input-group">
+          <label for="searchName">이름</label>
+          <input type="text" id="searchName" placeholder="이름을 입력하세요">
+        </div>
+        <div class="input-group">
+          <label for="searchTeam">팀명</label>
+          <input type="text" id="searchTeam" placeholder="팀명을 입력하세요">
+        </div>
+        <button class="action-button" onclick="searchEmployee()">검색</button>
+      </div>
+      <div id="searchResults" class="search-results"></div>
+      <div id="searchStatus" class="status-message"></div>
+      <div class="back-button">
+        <button class="action-button secondary" onclick="showPage('mainPage')">← 메인으로</button>
+      </div>
+    </div>
+  </div>
+</div>
+

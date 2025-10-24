@@ -1,0 +1,81 @@
+<!-- 아바타 생성 페이지 -->
+<div id="avatarPage" class="page">
+  <div class="avatar-fullscreen-container">
+    <!-- 상단 헤더 -->
+    <div class="avatar-header-bar">
+      <h2 class="avatar-page-title">아바타 생성</h2>
+      <button onclick="showPage('mainPage')" class="btn-back">← 메인으로</button>
+    </div>
+
+    <!-- 아바타 저장 폼 -->
+    <div class="avatar-save-section">
+      <div class="form-group-inline">
+        <input type="text" id="avatarName" placeholder="이름을 입력하세요" class="form-input">
+        <input type="text" id="avatarTeam" placeholder="팀명을 입력하세요" class="form-input">
+        <button onclick="saveAvatar()" class="btn btn-primary">저장</button>
+      </div>
+      <div id="avatarStatus" class="status-message"></div>
+    </div>
+
+    <!-- 메인 그리드 -->
+    <div class="avatar-main-grid">
+      <!-- 미리보기 패널 -->
+      <div class="avatar-preview-section">
+        <div class="preview-card">
+          <h3>미리보기</h3>
+          <div id="avatarPreview" style="width: 100%; max-width: 350px; margin: 0 auto;">
+            <!-- Dicebear SVG가 여기에 렌더링됩니다 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 옵션 패널 -->
+      <div class="avatar-options-section">
+        <!-- 머리 -->
+        <div class="part-section">
+          <div class="part-title">💇‍♀️ 머리 (48가지)</div>
+          <div class="options-grid" id="hairOptions"></div>
+        </div>
+
+        <!-- 눈 -->
+        <div class="part-section">
+          <div class="part-title">👁️ 눈 (24가지)</div>
+          <div class="options-grid" id="eyesOptions"></div>
+        </div>
+
+        <!-- 눈썹 -->
+        <div class="part-section">
+          <div class="part-title">✨ 눈썹 (13가지)</div>
+          <div class="options-grid" id="eyebrowsOptions"></div>
+        </div>
+
+        <!-- 코 -->
+        <div class="part-section">
+          <div class="part-title">👃 코 (6가지)</div>
+          <div class="options-grid" id="noseOptions"></div>
+        </div>
+
+        <!-- 입 -->
+        <div class="part-section">
+          <div class="part-title">👄 입 (27가지)</div>
+          <div class="options-grid" id="mouthOptions"></div>
+        </div>
+
+        <!-- 안경 -->
+        <div class="part-section">
+          <div class="part-title">👓 안경 (5가지)</div>
+          <div class="options-grid" id="glassesOptions"></div>
+        </div>
+
+        <!-- 하단 저장 버튼 (모바일용) -->
+        <div class="part-section mobile-save-section">
+          <button class="btn btn-primary btn-large" onclick="saveAvatar()">
+            아바타 저장
+          </button>
+          <p class="save-hint">* 상단에 이름과 팀명을 입력한 후 저장해주세요</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
