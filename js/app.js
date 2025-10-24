@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getDatabase, ref, push, get, child, remove, set, runTransaction } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+import { getDatabase, ref, push, get, child, remove, set, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCXaqnaoQYWZGywi_PPRohGaAJj_dBVDK0",
@@ -130,8 +130,14 @@ window.resetUsedVerses = resetUsedVerses;
 
 // 페이지 전환 함수 (HTML에서 호출)
 window.showPage = function(pageId) {
+  const targetPage = document.getElementById(pageId);
+  if (!targetPage) {
+    console.error(`Page with id '${pageId}' not found`);
+    return;
+  }
+  
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
+  targetPage.classList.add('active');
   
   // 아바타 페이지가 활성화될 때 아바타 빌더 초기화
   if (pageId === 'avatarPage') {
@@ -1358,9 +1364,8 @@ window.addMessageComment = async function() {
     status.textContent = "메시지가 등록되었습니다!";
     status.style.color = "#27ae60";
     
-    // 댓글 목록 새로고침
+    // 상태 메시지 초기화
     setTimeout(() => {
-      loadMessagesComments(employeeId);
       status.textContent = "";
     }, 1500);
     
@@ -1370,40 +1375,50 @@ window.addMessageComment = async function() {
   }
 };
 
-// 메시지 페이지 댓글 목록 불러오기
-async function loadMessagesComments(employeeId) {
+// 메시지 페이지 댓글 목록 불러오기 (실시간 리스너)
+function loadMessagesComments(employeeId) {
   const commentsList = document.getElementById('messagesCommentsList');
   
   if (!commentsList || !employeeId) return;
   
+  // 기존 리스너 정리
+  if (window.messagesCommentsListener) {
+    window.messagesCommentsListener();
+  }
+  
   try {
-    const snapshot = await get(ref(db, `comments/${employeeId}`));
-    
-    if (snapshot.exists()) {
-      const comments = [];
-      snapshot.forEach(childSnapshot => {
-        comments.push({
-          id: childSnapshot.key,
-          ...childSnapshot.val()
+    // 실시간 리스너 설정
+    const commentsRef = ref(db, `comments/${employeeId}`);
+    window.messagesCommentsListener = onValue(commentsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const comments = [];
+        snapshot.forEach(childSnapshot => {
+          comments.push({
+            id: childSnapshot.key,
+            ...childSnapshot.val()
+          });
         });
-      });
-      
-      // 최신순 정렬
-      comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      
-      displayComments(comments, employeeId);
-    } else {
-      commentsList.innerHTML = '<div class="no-comments">아직 응원 메시지가 없습니다. 첫 번째 메시지를 남겨주세요!</div>';
-    }
+        
+        // 최신순 정렬
+        comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        displayComments(comments, employeeId);
+      } else {
+        commentsList.innerHTML = '<div class="no-comments">아직 응원 메시지가 없습니다. 첫 번째 메시지를 남겨주세요!</div>';
+      }
+    }, (error) => {
+      console.error('Failed to load comments:', error);
+      commentsList.innerHTML = '<div class="no-comments">댓글을 불러오는데 실패했습니다.</div>';
+    });
   } catch (error) {
-    console.error('Failed to load comments:', error);
+    console.error('Failed to setup comments listener:', error);
     commentsList.innerHTML = '<div class="no-comments">댓글을 불러오는데 실패했습니다.</div>';
   }
 }
 
 // 댓글 표시
 function displayComments(comments, employeeId) {
-  const commentsList = document.getElementById('commentsList');
+  const commentsList = document.getElementById('messagesCommentsList');
   
   if (!commentsList) return;
   
@@ -1459,9 +1474,6 @@ window.editComment = async function(employeeId, commentId, currentAuthor, curren
       edited: true
     });
     
-    // 댓글 목록 새로고침
-    await loadMessagesComments(employeeId);
-    
     alert('메시지가 수정되었습니다!');
   } catch (error) {
     alert('수정 실패: ' + error.message);
@@ -1476,10 +1488,6 @@ window.deleteComment = async function(employeeId, commentId) {
   
   try {
     await remove(ref(db, `comments/${employeeId}/${commentId}`));
-    
-    // 댓글 목록 새로고침
-    await loadMessagesComments(employeeId);
-    
   } catch (error) {
     alert('삭제 실패: ' + error.message);
   }
