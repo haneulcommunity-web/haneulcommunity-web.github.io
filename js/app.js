@@ -156,14 +156,6 @@ window.showPage = function(pageId) {
     }, 100);
   }
   
-  // 검색 페이지가 활성화될 때 저장된 검색 결과 복원
-  if (pageId === 'searchPage') {
-    setTimeout(() => {
-      if (typeof window.restoreSearchResults === 'function') {
-        window.restoreSearchResults();
-      }
-    }, 100);
-  }
 };
 
 // 아바타 저장 함수 (새로운 아바타 빌더 시스템 사용)
@@ -454,20 +446,10 @@ window.searchEmployee = async function() {
       });
 
       if (filteredEmployees.length > 0) {
-        // 검색 결과를 세션 스토리지에 저장
-        sessionStorage.setItem('searchResults', JSON.stringify(filteredEmployees));
-        sessionStorage.setItem('searchName', name);
-        sessionStorage.setItem('searchTeam', team);
-        
         await displaySearchResults(filteredEmployees);
         status.textContent = `${filteredEmployees.length}명을 찾았습니다!`;
         status.style.color = "#27ae60";
       } else {
-        // 검색 결과가 없을 때는 저장된 데이터 삭제
-        sessionStorage.removeItem('searchResults');
-        sessionStorage.removeItem('searchName');
-        sessionStorage.removeItem('searchTeam');
-        
         status.textContent = "해당 조건에 맞는 사람이 없습니다.";
         status.style.color = "#e74c3c";
       }
@@ -540,42 +522,6 @@ async function displaySearchResults(employees) {
   // searchPage에 그대로 유지 (resultPage로 이동하지 않음)
 }
 
-// 검색 페이지 로드 시 저장된 검색 결과 복원
-window.restoreSearchResults = async function() {
-  const searchResults = sessionStorage.getItem('searchResults');
-  const searchName = sessionStorage.getItem('searchName');
-  const searchTeam = sessionStorage.getItem('searchTeam');
-  
-  if (searchResults && searchName !== null && searchTeam !== null) {
-    try {
-      const employees = JSON.parse(searchResults);
-      
-      // 입력 필드에 검색 조건 복원
-      if (document.getElementById('searchName')) {
-        document.getElementById('searchName').value = searchName || '';
-      }
-      if (document.getElementById('searchTeam')) {
-        document.getElementById('searchTeam').value = searchTeam || '';
-      }
-      
-      // 검색 결과 표시
-      await displaySearchResults(employees);
-      
-      // 상태 메시지 업데이트
-      const status = document.getElementById('searchStatus');
-      if (status) {
-        status.textContent = `${employees.length}명을 찾았습니다! (복원됨)`;
-        status.style.color = "#27ae60";
-      }
-    } catch (error) {
-      console.error('Failed to restore search results:', error);
-      // 복원 실패 시 저장된 데이터 삭제
-      sessionStorage.removeItem('searchResults');
-      sessionStorage.removeItem('searchName');
-      sessionStorage.removeItem('searchTeam');
-    }
-  }
-};
 
 // 검색 초기화 함수
 window.clearSearch = function() {
