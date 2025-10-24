@@ -1776,7 +1776,7 @@ window.adminDeleteComment = async function(employeeId, commentId) {
 };
 
 // 페이지 로드 시 초기화
-document.addEventListener('DOMContentLoaded', function() {
-  // 기본 페이지 표시
+// 모든 뷰가 로드된 후에 메인 페이지 표시
+window.addEventListener('viewsLoaded', function() {
   showPage('mainPage');
 });

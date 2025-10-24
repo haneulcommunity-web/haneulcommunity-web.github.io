@@ -33,6 +33,9 @@ const VIEW_LOADER = {
       const loadPromises = views.map(view => this.loadView(view));
       await Promise.all(loadPromises);
       console.log('All views loaded successfully');
+      
+      // 모든 뷰가 로드된 후 커스텀 이벤트 발생
+      window.dispatchEvent(new Event('viewsLoaded'));
     } catch (error) {
       console.error('Error loading views:', error);
     }
